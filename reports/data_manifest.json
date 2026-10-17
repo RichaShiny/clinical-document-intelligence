@@ -1,0 +1,52 @@
+{
+  "dataset": "ade-benchmark-corpus/ade_corpus_v2",
+  "revision": "4ba01c71687dd7c996597042449448ea312126cf",
+  "source_id_revision": "2851af96e26050cf551a2e1f716ff861f7b1059b",
+  "sha256": {
+    "classification.parquet": "599e7777b35170c40a7d4cdf5cbb1941fad7d6565f1bd7182b2bf271d30379f5",
+    "drug_ade_relation.parquet": "f7c34957a1d9e7c0977df67d490d60422937ecd027336b40b92c419708b038b7",
+    "DRUG-AE.rel": "542cdc483ccc94927762eaf2c9a8ecac49a6c10037dda2895be6a6e20160f75a",
+    "ADE-NEG.txt": "8f506c159042ce354fbf26981dc39971dde8f09b1158d94106eab1e516e53fcf",
+    "README.txt": "97be43269d425a88c605758b64cf058c59c4a9965af649b11670fbb66eea8f82"
+  },
+  "raw_rows": 23516,
+  "unique_normalized_sentences": 20895,
+  "retained_sentences": 20895,
+  "conflicting_sentences_removed": 0,
+  "missing_pmid_removed": 0,
+  "duplicate_rows_removed": 2621,
+  "ambiguous_entity_alignments_excluded": 725,
+  "document_vs_sentence_offset_disagreements": 37,
+  "documents": 2972,
+  "connected_document_groups": 2911,
+  "splits": {
+    "calibration": {
+      "n": 2088,
+      "positive": 426,
+      "groups": 296
+    },
+    "policy": {
+      "n": 2095,
+      "positive": 429,
+      "groups": 295
+    },
+    "test": {
+      "n": 4172,
+      "positive": 853,
+      "groups": 587
+    },
+    "train": {
+      "n": 10448,
+      "positive": 2136,
+      "groups": 1444
+    },
+    "tune": {
+      "n": 2092,
+      "positive": 427,
+      "groups": 289
+    }
+  },
+  "split_policy": "PMID groups connected through duplicate normalized text; stratified 10-fold seed42. Train50/tune10/calibration10/policy10/test20.",
+  "prepared_sha256": "aaf05a075f33e3fe2975808a7758e3037836e0b49a14e5b27a9c6861da864127",
+  "license": "Hugging Face card: unknown. Raw text and model artifacts are not redistributed in this repository."
+}
