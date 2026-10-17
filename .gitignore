@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.env
+.DS_Store
+.coverage
+.pytest_cache/
+data/private/
+reports/private/
