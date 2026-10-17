@@ -1,1513 +1,1320 @@
 {
-  "llm_comparison": {
-    "baseline_on_same_subset": {
-      "challenge": {
-        "n": 16,
-        "tp": 16,
-        "fp": 5,
-        "fn": 5,
-        "precision": 0.7619047619047619,
-        "recall": 0.7619047619047619,
-        "f1": 0.7619047619047619,
-        "f1_ci95": [
-          0.55,
-          0.9230769230769231
+  "task": "ADE literature sentence triage",
+  "seed": 42,
+  "python": "3.13.2",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "versions": {
+    "torch": "2.12.0",
+    "transformers": "5.12.1",
+    "scikit-learn": "1.9.0",
+    "sklearn-crfsuite": "0.5.0",
+    "pandas": "2.2.3"
+  },
+  "models": {
+    "tfidf_logistic": {
+      "name": "tfidf_logistic",
+      "metadata": {
+        "C": 4.0,
+        "tuning_trials": [
+          {
+            "C": 0.25,
+            "tune_auprc": 0.7202734147687953
+          },
+          {
+            "C": 1.0,
+            "tune_auprc": 0.750974585859026
+          },
+          {
+            "C": 4.0,
+            "tune_auprc": 0.7521176194372712
+          }
         ],
-        "by_kind": {
-          "condition": {
-            "tp": 11,
-            "fp": 5,
-            "fn": 5,
-            "precision": 0.6875,
-            "recall": 0.6875,
-            "f1": 0.6875
+        "framework": "scikit-learn",
+        "train_seconds": 0.8656900830101222,
+        "features": "Word 1\u20132 grams and character 3\u20135 grams"
+      },
+      "selection_auprc": 0.7521176194372712,
+      "policy_target_recall": 0.9,
+      "policy": {
+        "n": 2095,
+        "positive": 429,
+        "auprc": 0.7725821889014184,
+        "auroc": 0.9150751209574739,
+        "precision": 0.45263157894736844,
+        "recall": 0.9020979020979021,
+        "f1": 0.602803738317757,
+        "threshold": 0.12173649794544177,
+        "review_fraction": 0.4081145584725537,
+        "brier": 0.08615799418127988,
+        "ece": 0.015676340810214916,
+        "reliability": [
+          {
+            "low": 0.0,
+            "n": 1162,
+            "probability": 0.033622463954602576,
+            "frequency": 0.027538726333907058
           },
-          "medication": {
-            "tp": 3,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
+          {
+            "low": 0.1,
+            "n": 269,
+            "probability": 0.14357574432200798,
+            "frequency": 0.11895910780669144
           },
-          "procedure": {
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
+          {
+            "low": 0.2,
+            "n": 148,
+            "probability": 0.24644230502601028,
+            "frequency": 0.22297297297297297
           },
-          "follow_up": {
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
+          {
+            "low": 0.3,
+            "n": 99,
+            "probability": 0.3504014849701593,
+            "frequency": 0.3434343434343434
+          },
+          {
+            "low": 0.4,
+            "n": 76,
+            "probability": 0.44718087520899735,
+            "frequency": 0.4605263157894737
+          },
+          {
+            "low": 0.5,
+            "n": 69,
+            "probability": 0.5509866267224005,
+            "frequency": 0.6231884057971014
+          },
+          {
+            "low": 0.6,
+            "n": 57,
+            "probability": 0.6520599193862436,
+            "frequency": 0.631578947368421
+          },
+          {
+            "low": 0.7,
+            "n": 48,
+            "probability": 0.7505910396307537,
+            "frequency": 0.6875
+          },
+          {
+            "low": 0.8,
+            "n": 66,
+            "probability": 0.8520832993533203,
+            "frequency": 0.8787878787878788
+          },
+          {
+            "low": 0.9,
+            "n": 101,
+            "probability": 0.9508226110236944,
+            "frequency": 0.9207920792079208
           }
-        },
-        "by_age": {
-          "18–39": {
-            "n": 6,
-            "tp": 8,
-            "fp": 1,
-            "fn": 1,
-            "precision": 0.8888888888888888,
-            "recall": 0.8888888888888888,
-            "f1": 0.8888888888888888
-          },
-          "40–64": {
-            "n": 5,
-            "tp": 4,
-            "fp": 2,
-            "fn": 2,
-            "precision": 0.6666666666666666,
-            "recall": 0.6666666666666666,
-            "f1": 0.6666666666666666
-          },
-          "65+": {
-            "n": 5,
-            "tp": 4,
-            "fp": 2,
-            "fn": 2,
-            "precision": 0.6666666666666666,
-            "recall": 0.6666666666666666,
-            "f1": 0.6666666666666666
-          }
-        },
-        "assertion_confusion": {
-          "negated → negated": 5,
-          "present → present": 5,
-          "negated → present": 1,
-          "uncertain → present": 1,
-          "historical → present": 1,
-          "family → family": 1,
-          "historical → historical": 2,
-          "planned → planned": 2,
-          "present → negated": 1,
-          "uncertain → uncertain": 1,
-          "family → present": 1
-        }
+        ],
+        "confusion_matrix": [
+          [
+            1198,
+            468
+          ],
+          [
+            42,
+            387
+          ]
+        ]
       },
       "test": {
-        "n": 15,
-        "tp": 60,
-        "fp": 0,
-        "fn": 0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "f1_ci95": [
-          1.0,
-          1.0
+        "n": 4172,
+        "positive": 853,
+        "auprc": 0.732556963953063,
+        "auroc": 0.9024356903500999,
+        "precision": 0.45203060623896407,
+        "recall": 0.9003516998827668,
+        "f1": 0.6018808777429467,
+        "threshold": 0.12173649794544177,
+        "review_fraction": 0.40723873441994246,
+        "brier": 0.09321417679241019,
+        "ece": 0.00915112711792216,
+        "reliability": [
+          {
+            "low": 0.0,
+            "n": 2291,
+            "probability": 0.03419658215887243,
+            "frequency": 0.030117852466171977
+          },
+          {
+            "low": 0.1,
+            "n": 569,
+            "probability": 0.14321251175400193,
+            "frequency": 0.14586994727592267
+          },
+          {
+            "low": 0.2,
+            "n": 301,
+            "probability": 0.2481100688089805,
+            "frequency": 0.25249169435215946
+          },
+          {
+            "low": 0.3,
+            "n": 200,
+            "probability": 0.3461890650816342,
+            "frequency": 0.34
+          },
+          {
+            "low": 0.4,
+            "n": 157,
+            "probability": 0.44875940822336,
+            "frequency": 0.43312101910828027
+          },
+          {
+            "low": 0.5,
+            "n": 121,
+            "probability": 0.5493641760975467,
+            "frequency": 0.5785123966942148
+          },
+          {
+            "low": 0.6,
+            "n": 107,
+            "probability": 0.6492353887064841,
+            "frequency": 0.6448598130841121
+          },
+          {
+            "low": 0.7,
+            "n": 128,
+            "probability": 0.7509746529489942,
+            "frequency": 0.734375
+          },
+          {
+            "low": 0.8,
+            "n": 122,
+            "probability": 0.8529348402802893,
+            "frequency": 0.7950819672131147
+          },
+          {
+            "low": 0.9,
+            "n": 176,
+            "probability": 0.9552966762879158,
+            "frequency": 0.9034090909090909
+          }
         ],
-        "by_kind": {
-          "condition": {
-            "tp": 15,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
-          },
-          "medication": {
-            "tp": 15,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
-          },
-          "procedure": {
-            "tp": 15,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
-          },
-          "follow_up": {
-            "tp": 15,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
-          }
+        "confusion_matrix": [
+          [
+            2388,
+            931
+          ],
+          [
+            85,
+            768
+          ]
+        ]
+      },
+      "uncalibrated_test_brier": 0.09371694074732485,
+      "test_ci95": {
+        "auprc": [
+          0.6958212269017192,
+          0.7679272852819035
+        ],
+        "recall": [
+          0.8804359400097458,
+          0.920821429766166
+        ],
+        "review_fraction": [
+          0.3869780229005812,
+          0.42714321659514815
+        ]
+      },
+      "slices": {
+        "short_le_15_words": {
+          "n": 1844,
+          "positive": 390,
+          "auprc": 0.7834710462787,
+          "auroc": 0.9252336613409516,
+          "precision": 0.5013927576601671,
+          "recall": 0.9230769230769231,
+          "f1": 0.6498194945848376,
+          "threshold": 0.12173649794544177,
+          "review_fraction": 0.3893709327548807,
+          "brier": 0.08402691155465941,
+          "ece": 0.016461439413219894,
+          "reliability": [
+            {
+              "low": 0.0,
+              "n": 1059,
+              "probability": 0.031212761045603492,
+              "frequency": 0.023607176581680833
+            },
+            {
+              "low": 0.1,
+              "n": 206,
+              "probability": 0.14326457499293566,
+              "frequency": 0.13106796116504854
+            },
+            {
+              "low": 0.2,
+              "n": 100,
+              "probability": 0.24779808771805492,
+              "frequency": 0.26
+            },
+            {
+              "low": 0.3,
+              "n": 75,
+              "probability": 0.34587115028536336,
+              "frequency": 0.32
+            },
+            {
+              "low": 0.4,
+              "n": 68,
+              "probability": 0.452015664959393,
+              "frequency": 0.45588235294117646
+            },
+            {
+              "low": 0.5,
+              "n": 53,
+              "probability": 0.5436116108592648,
+              "frequency": 0.6037735849056604
+            },
+            {
+              "low": 0.6,
+              "n": 46,
+              "probability": 0.649686690656487,
+              "frequency": 0.5652173913043478
+            },
+            {
+              "low": 0.7,
+              "n": 60,
+              "probability": 0.7507767161467387,
+              "frequency": 0.7333333333333333
+            },
+            {
+              "low": 0.8,
+              "n": 64,
+              "probability": 0.8589530020644445,
+              "frequency": 0.828125
+            },
+            {
+              "low": 0.9,
+              "n": 113,
+              "probability": 0.9581490982672076,
+              "frequency": 0.9026548672566371
+            }
+          ],
+          "confusion_matrix": [
+            [
+              1096,
+              358
+            ],
+            [
+              30,
+              360
+            ]
+          ]
         },
-        "by_age": {
-          "18–39": {
-            "n": 2,
-            "tp": 8,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
-          },
-          "40–64": {
-            "n": 6,
-            "tp": 24,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
-          },
-          "65+": {
-            "n": 7,
-            "tp": 28,
-            "fp": 0,
-            "fn": 0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "f1": 1.0
-          }
-        },
-        "assertion_confusion": {
-          "negated → negated": 3,
-          "present → present": 18,
-          "planned → planned": 30,
-          "historical → historical": 2,
-          "family → family": 5,
-          "uncertain → uncertain": 2
+        "long_gt_15_words": {
+          "n": 2328,
+          "positive": 463,
+          "auprc": 0.6834448722680824,
+          "auroc": 0.8805702407078213,
+          "precision": 0.41590214067278286,
+          "recall": 0.8812095032397408,
+          "f1": 0.5650969529085873,
+          "threshold": 0.12173649794544177,
+          "review_fraction": 0.4213917525773196,
+          "brier": 0.10049137485873856,
+          "ece": 0.009284506609950949,
+          "reliability": [
+            {
+              "low": 0.0,
+              "n": 1232,
+              "probability": 0.036761408911268376,
+              "frequency": 0.03571428571428571
+            },
+            {
+              "low": 0.1,
+              "n": 363,
+              "probability": 0.14318296622446927,
+              "frequency": 0.15426997245179064
+            },
+            {
+              "low": 0.2,
+              "n": 201,
+              "probability": 0.2482652832820778,
+              "frequency": 0.24875621890547264
+            },
+            {
+              "low": 0.3,
+              "n": 125,
+              "probability": 0.34637981395939665,
+              "frequency": 0.352
+            },
+            {
+              "low": 0.4,
+              "n": 89,
+              "probability": 0.4462714817284135,
+              "frequency": 0.4157303370786517
+            },
+            {
+              "low": 0.5,
+              "n": 68,
+              "probability": 0.5538477931215019,
+              "frequency": 0.5588235294117647
+            },
+            {
+              "low": 0.6,
+              "n": 61,
+              "probability": 0.6488950626458265,
+              "frequency": 0.7049180327868853
+            },
+            {
+              "low": 0.7,
+              "n": 68,
+              "probability": 0.7511493030686315,
+              "frequency": 0.7352941176470589
+            },
+            {
+              "low": 0.8,
+              "n": 58,
+              "probability": 0.846294110035704,
+              "frequency": 0.7586206896551724
+            },
+            {
+              "low": 0.9,
+              "n": 63,
+              "probability": 0.9501804273409319,
+              "frequency": 0.9047619047619048
+            }
+          ],
+          "confusion_matrix": [
+            [
+              1292,
+              573
+            ],
+            [
+              55,
+              408
+            ]
+          ]
         }
       }
     },
-    "paired_test_delta": {
-      "split": "test",
-      "delta_f1": -0.07563025210084029,
-      "ci95": [
-        -0.1428571428571429,
-        -0.01666666666666672
-      ],
-      "bootstrap_samples": 500
-    },
-    "experiment": "Post-hoc alignment improvement on the same saved responses. Not an untouched holdout result.",
-    "strict_v1_metrics": {
-      "splits": {
-        "challenge": {
-          "n": 16,
-          "tp": 2,
-          "fp": 1,
-          "fn": 19,
-          "precision": 0.6666666666666666,
-          "recall": 0.09523809523809523,
-          "f1": 0.16666666666666666,
-          "f1_ci95": [
-            0.0,
-            0.42857142857142855
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 2,
-              "fp": 0,
-              "fn": 14,
-              "precision": 1.0,
-              "recall": 0.125,
-              "f1": 0.2222222222222222
-            },
-            "medication": {
-              "tp": 0,
-              "fp": 0,
-              "fn": 3,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "procedure": {
-              "tp": 0,
-              "fp": 0,
-              "fn": 1,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "follow_up": {
-              "tp": 0,
-              "fp": 1,
-              "fn": 1,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            }
+    "pytorch_dan": {
+      "name": "pytorch_dan",
+      "metadata": {
+        "framework": "PyTorch",
+        "architecture": "96-dim trainable EmbeddingBag \u2192 64 ReLU \u2192 dropout .25 \u2192 binary logit",
+        "train_seconds": 4.084157374978531,
+        "best_epoch": 4,
+        "history": [
+          {
+            "epoch": 1,
+            "loss": 0.48416864108748553,
+            "tune_auprc": 0.4525716101941514
           },
-          "by_age": {
-            "18–39": {
-              "n": 6,
-              "tp": 0,
-              "fp": 0,
-              "fn": 9,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "40–64": {
-              "n": 5,
-              "tp": 0,
-              "fp": 1,
-              "fn": 6,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "65+": {
-              "n": 5,
-              "tp": 2,
-              "fp": 0,
-              "fn": 4,
-              "precision": 1.0,
-              "recall": 0.3333333333333333,
-              "f1": 0.5
-            }
+          {
+            "epoch": 2,
+            "loss": 0.37297508120536804,
+            "tune_auprc": 0.5293142127936281
           },
-          "assertion_confusion": {
-            "present → present": 2
+          {
+            "epoch": 3,
+            "loss": 0.2795711799365718,
+            "tune_auprc": 0.5601765802164345
+          },
+          {
+            "epoch": 4,
+            "loss": 0.2087650749741531,
+            "tune_auprc": 0.5685160750687666
+          },
+          {
+            "epoch": 5,
+            "loss": 0.15328026644703818,
+            "tune_auprc": 0.558102702049352
+          },
+          {
+            "epoch": 6,
+            "loss": 0.1124517741363223,
+            "tune_auprc": 0.5397213796961382
+          },
+          {
+            "epoch": 7,
+            "loss": 0.07975684556110603,
+            "tune_auprc": 0.5312372918098035
+          },
+          {
+            "epoch": 8,
+            "loss": 0.057350246326589,
+            "tune_auprc": 0.5247687097063762
+          },
+          {
+            "epoch": 9,
+            "loss": 0.04181480396357251,
+            "tune_auprc": 0.5164666189685956
+          },
+          {
+            "epoch": 10,
+            "loss": 0.028723499578673664,
+            "tune_auprc": 0.5094322945206389
+          },
+          {
+            "epoch": 11,
+            "loss": 0.021776739916786914,
+            "tune_auprc": 0.5045636625440506
+          },
+          {
+            "epoch": 12,
+            "loss": 0.016319120325511548,
+            "tune_auprc": 0.5121132746745224
+          },
+          {
+            "epoch": 13,
+            "loss": 0.012077795551726368,
+            "tune_auprc": 0.502140971306823
+          },
+          {
+            "epoch": 14,
+            "loss": 0.008647672937069906,
+            "tune_auprc": 0.5006597573752054
+          },
+          {
+            "epoch": 15,
+            "loss": 0.006719671113121255,
+            "tune_auprc": 0.49863824918269656
+          },
+          {
+            "epoch": 16,
+            "loss": 0.0056683623158123074,
+            "tune_auprc": 0.49087775906308073
+          },
+          {
+            "epoch": 17,
+            "loss": 0.005650045094648149,
+            "tune_auprc": 0.4939460761131296
+          },
+          {
+            "epoch": 18,
+            "loss": 0.004442723408318692,
+            "tune_auprc": 0.49889255412049066
+          },
+          {
+            "epoch": 19,
+            "loss": 0.003693743899220419,
+            "tune_auprc": 0.49705344966852644
+          },
+          {
+            "epoch": 20,
+            "loss": 0.003569936722292701,
+            "tune_auprc": 0.49685295233509774
           }
+        ],
+        "vocabulary": 8396,
+        "max_tokens": 256
+      },
+      "selection_auprc": 0.5685160750687666,
+      "policy_target_recall": 0.9,
+      "policy": {
+        "n": 2095,
+        "positive": 429,
+        "auprc": 0.6004302823689108,
+        "auroc": 0.838570393192242,
+        "precision": 0.33887915936952717,
+        "recall": 0.9020979020979021,
+        "f1": 0.49267982176957353,
+        "threshold": 0.0986277420858116,
+        "review_fraction": 0.545107398568019,
+        "brier": 0.11744529175418496,
+        "ece": 0.01522546643371512,
+        "reliability": [
+          {
+            "low": 0.0,
+            "n": 958,
+            "probability": 0.04193864471669124,
+            "frequency": 0.04488517745302714
+          },
+          {
+            "low": 0.1,
+            "n": 382,
+            "probability": 0.1461433848002455,
+            "frequency": 0.1518324607329843
+          },
+          {
+            "low": 0.2,
+            "n": 202,
+            "probability": 0.24868448755277212,
+            "frequency": 0.22772277227722773
+          },
+          {
+            "low": 0.3,
+            "n": 146,
+            "probability": 0.3557087574595454,
+            "frequency": 0.3356164383561644
+          },
+          {
+            "low": 0.4,
+            "n": 125,
+            "probability": 0.44825190944220034,
+            "frequency": 0.352
+          },
+          {
+            "low": 0.5,
+            "n": 119,
+            "probability": 0.5509170073130586,
+            "frequency": 0.5546218487394958
+          },
+          {
+            "low": 0.6,
+            "n": 80,
+            "probability": 0.6561792126363738,
+            "frequency": 0.6875
+          },
+          {
+            "low": 0.7,
+            "n": 59,
+            "probability": 0.7402444749388281,
+            "frequency": 0.8135593220338984
+          },
+          {
+            "low": 0.8,
+            "n": 23,
+            "probability": 0.8420357696452822,
+            "frequency": 0.8260869565217391
+          },
+          {
+            "low": 0.9,
+            "n": 1,
+            "probability": 0.9368247433982317,
+            "frequency": 1.0
+          }
+        ],
+        "confusion_matrix": [
+          [
+            911,
+            755
+          ],
+          [
+            42,
+            387
+          ]
+        ]
+      },
+      "test": {
+        "n": 4172,
+        "positive": 853,
+        "auprc": 0.5813015904261872,
+        "auroc": 0.8302127047829699,
+        "precision": 0.33087597571552474,
+        "recall": 0.8944900351699883,
+        "f1": 0.48306426084203863,
+        "threshold": 0.0986277420858116,
+        "review_fraction": 0.552732502396932,
+        "brier": 0.11977001078172865,
+        "ece": 0.012407720495422292,
+        "reliability": [
+          {
+            "low": 0.0,
+            "n": 1879,
+            "probability": 0.04328393221854338,
+            "frequency": 0.047897817988291645
+          },
+          {
+            "low": 0.1,
+            "n": 754,
+            "probability": 0.1460459629669964,
+            "frequency": 0.14058355437665782
+          },
+          {
+            "low": 0.2,
+            "n": 435,
+            "probability": 0.24651827894834885,
+            "frequency": 0.2482758620689655
+          },
+          {
+            "low": 0.3,
+            "n": 281,
+            "probability": 0.34842832700460996,
+            "frequency": 0.2918149466192171
+          },
+          {
+            "low": 0.4,
+            "n": 260,
+            "probability": 0.44713601891622373,
+            "frequency": 0.40384615384615385
+          },
+          {
+            "low": 0.5,
+            "n": 227,
+            "probability": 0.548540922521876,
+            "frequency": 0.5462555066079295
+          },
+          {
+            "low": 0.6,
+            "n": 183,
+            "probability": 0.6463736912527852,
+            "frequency": 0.6338797814207651
+          },
+          {
+            "low": 0.7,
+            "n": 104,
+            "probability": 0.7428665303902514,
+            "frequency": 0.7980769230769231
+          },
+          {
+            "low": 0.8,
+            "n": 43,
+            "probability": 0.8370615986694832,
+            "frequency": 0.7906976744186046
+          },
+          {
+            "low": 0.9,
+            "n": 6,
+            "probability": 0.9179807517534218,
+            "frequency": 0.8333333333333334
+          }
+        ],
+        "confusion_matrix": [
+          [
+            1776,
+            1543
+          ],
+          [
+            90,
+            763
+          ]
+        ]
+      },
+      "uncalibrated_test_brier": 0.12769267368152454,
+      "test_ci95": {
+        "auprc": [
+          0.5420487093296854,
+          0.6231868377716561
+        ],
+        "recall": [
+          0.8703564082052454,
+          0.9170194743062983
+        ],
+        "review_fraction": [
+          0.5319501786959125,
+          0.572531001903159
+        ]
+      },
+      "slices": {
+        "short_le_15_words": {
+          "n": 1844,
+          "positive": 390,
+          "auprc": 0.6143353659823344,
+          "auroc": 0.8423429619440622,
+          "precision": 0.34626865671641793,
+          "recall": 0.8923076923076924,
+          "f1": 0.4989247311827957,
+          "threshold": 0.0986277420858116,
+          "review_fraction": 0.5450108459869848,
+          "brier": 0.11941403867693938,
+          "ece": 0.037683054891386125,
+          "reliability": [
+            {
+              "low": 0.0,
+              "n": 841,
+              "probability": 0.03641751065554734,
+              "frequency": 0.04994054696789536
+            },
+            {
+              "low": 0.1,
+              "n": 273,
+              "probability": 0.14882031759787764,
+              "frequency": 0.12454212454212454
+            },
+            {
+              "low": 0.2,
+              "n": 159,
+              "probability": 0.24852070956973596,
+              "frequency": 0.2138364779874214
+            },
+            {
+              "low": 0.3,
+              "n": 122,
+              "probability": 0.34796966655667894,
+              "frequency": 0.2540983606557377
+            },
+            {
+              "low": 0.4,
+              "n": 109,
+              "probability": 0.4449622444426696,
+              "frequency": 0.3853211009174312
+            },
+            {
+              "low": 0.5,
+              "n": 114,
+              "probability": 0.5475747154786723,
+              "frequency": 0.45614035087719296
+            },
+            {
+              "low": 0.6,
+              "n": 102,
+              "probability": 0.6488297458032816,
+              "frequency": 0.5490196078431373
+            },
+            {
+              "low": 0.7,
+              "n": 77,
+              "probability": 0.7462457627964836,
+              "frequency": 0.8051948051948052
+            },
+            {
+              "low": 0.8,
+              "n": 41,
+              "probability": 0.8382352141307864,
+              "frequency": 0.7804878048780488
+            },
+            {
+              "low": 0.9,
+              "n": 6,
+              "probability": 0.9179807517534218,
+              "frequency": 0.8333333333333334
+            }
+          ],
+          "confusion_matrix": [
+            [
+              797,
+              657
+            ],
+            [
+              42,
+              348
+            ]
+          ]
         },
-        "test": {
-          "n": 15,
-          "tp": 1,
-          "fp": 0,
-          "fn": 59,
-          "precision": 1.0,
-          "recall": 0.016666666666666666,
-          "f1": 0.03278688524590164,
-          "f1_ci95": [
-            0.0,
-            0.09523809523809523
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 0,
-              "fp": 0,
-              "fn": 15,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
+        "long_gt_15_words": {
+          "n": 2328,
+          "positive": 463,
+          "auprc": 0.565127435620955,
+          "auroc": 0.822699610304634,
+          "precision": 0.31898539584934665,
+          "recall": 0.896328293736501,
+          "f1": 0.47052154195011336,
+          "threshold": 0.0986277420858116,
+          "review_fraction": 0.5588487972508591,
+          "brier": 0.12005197494033319,
+          "ece": 0.017215778119386772,
+          "reliability": [
+            {
+              "low": 0.0,
+              "n": 1038,
+              "probability": 0.04884718899549875,
+              "frequency": 0.046242774566473986
             },
-            "medication": {
-              "tp": 1,
-              "fp": 0,
-              "fn": 14,
-              "precision": 1.0,
-              "recall": 0.06666666666666667,
-              "f1": 0.125
+            {
+              "low": 0.1,
+              "n": 481,
+              "probability": 0.1444713292575773,
+              "frequency": 0.1496881496881497
             },
-            "procedure": {
-              "tp": 0,
-              "fp": 0,
-              "fn": 15,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
+            {
+              "low": 0.2,
+              "n": 276,
+              "probability": 0.24536470478602806,
+              "frequency": 0.26811594202898553
             },
-            "follow_up": {
-              "tp": 0,
-              "fp": 0,
-              "fn": 15,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            }
-          },
-          "by_age": {
-            "18–39": {
+            {
+              "low": 0.3,
+              "n": 159,
+              "probability": 0.34878025514704747,
+              "frequency": 0.32075471698113206
+            },
+            {
+              "low": 0.4,
+              "n": 151,
+              "probability": 0.44870516737726623,
+              "frequency": 0.41721854304635764
+            },
+            {
+              "low": 0.5,
+              "n": 113,
+              "probability": 0.5495156800698869,
+              "frequency": 0.6371681415929203
+            },
+            {
+              "low": 0.6,
+              "n": 81,
+              "probability": 0.6432808818188267,
+              "frequency": 0.7407407407407407
+            },
+            {
+              "low": 0.7,
+              "n": 27,
+              "probability": 0.7332294601947004,
+              "frequency": 0.7777777777777778
+            },
+            {
+              "low": 0.8,
               "n": 2,
-              "tp": 0,
-              "fp": 0,
-              "fn": 8,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "40–64": {
-              "n": 6,
-              "tp": 0,
-              "fp": 0,
-              "fn": 24,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "65+": {
-              "n": 7,
-              "tp": 1,
-              "fp": 0,
-              "fn": 27,
-              "precision": 1.0,
-              "recall": 0.03571428571428571,
-              "f1": 0.06896551724137931
+              "probability": 0.8130024817127648,
+              "frequency": 1.0
             }
-          },
-          "assertion_confusion": {
-            "present → present": 1
-          }
+          ],
+          "confusion_matrix": [
+            [
+              979,
+              886
+            ],
+            [
+              48,
+              415
+            ]
+          ]
         }
+      }
+    },
+    "biomedbert_frozen": {
+      "name": "biomedbert_frozen",
+      "metadata": {
+        "framework": "Hugging Face Transformers + PyTorch + scikit-learn",
+        "model_id": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
+        "revision": "e1354b7a3a09615f6aba48dfad4b7a613eef7062",
+        "encoder_finetuned": false,
+        "pooling": "attention-masked mean",
+        "max_length": 128,
+        "embedding_seconds": 176.5135134999873,
+        "C": 0.01,
+        "tuning_trials": [
+          {
+            "C": 0.01,
+            "tune_auprc": 0.8367809615858159
+          },
+          {
+            "C": 0.1,
+            "tune_auprc": 0.8322561928950238
+          },
+          {
+            "C": 1.0,
+            "tune_auprc": 0.8239725910378959
+          }
+        ]
       },
-      "evaluated_note_ids": [
-        "test-014",
-        "test-003",
-        "test-035",
-        "test-031",
-        "test-028",
-        "test-017",
-        "test-013",
-        "test-011",
-        "test-054",
-        "test-004",
-        "test-073",
-        "test-067",
-        "test-068",
-        "test-074",
-        "test-032",
-        "challenge-000",
-        "challenge-001",
-        "challenge-002",
-        "challenge-003",
-        "challenge-004",
-        "challenge-005",
-        "challenge-006",
-        "challenge-007",
-        "challenge-008",
-        "challenge-009",
-        "challenge-010",
-        "challenge-011",
-        "challenge-012",
-        "challenge-013",
-        "challenge-014",
-        "challenge-015"
-      ],
-      "latency_ms": {
-        "median": 9345.677124976646,
-        "p95": 12193.849875009619
+      "selection_auprc": 0.8367809615858159,
+      "policy_target_recall": 0.9,
+      "policy": {
+        "n": 2095,
+        "positive": 429,
+        "auprc": 0.8411791709262686,
+        "auroc": 0.9490635415005162,
+        "precision": 0.6292682926829268,
+        "recall": 0.9020979020979021,
+        "f1": 0.7413793103448276,
+        "threshold": 0.20637304856010874,
+        "review_fraction": 0.2935560859188544,
+        "brier": 0.06850237881014894,
+        "ece": 0.009907585338019113,
+        "reliability": [
+          {
+            "low": 0.0,
+            "n": 1329,
+            "probability": 0.017502610161933115,
+            "frequency": 0.01730624529721595
+          },
+          {
+            "low": 0.1,
+            "n": 139,
+            "probability": 0.14183035719032552,
+            "frequency": 0.1366906474820144
+          },
+          {
+            "low": 0.2,
+            "n": 114,
+            "probability": 0.24649829617159438,
+            "frequency": 0.2543859649122807
+          },
+          {
+            "low": 0.3,
+            "n": 76,
+            "probability": 0.3492590065001401,
+            "frequency": 0.3157894736842105
+          },
+          {
+            "low": 0.4,
+            "n": 74,
+            "probability": 0.4482109154655922,
+            "frequency": 0.47297297297297297
+          },
+          {
+            "low": 0.5,
+            "n": 56,
+            "probability": 0.5515202825729484,
+            "frequency": 0.625
+          },
+          {
+            "low": 0.6,
+            "n": 53,
+            "probability": 0.6529152545113935,
+            "frequency": 0.7924528301886793
+          },
+          {
+            "low": 0.7,
+            "n": 65,
+            "probability": 0.749825988494793,
+            "frequency": 0.7538461538461538
+          },
+          {
+            "low": 0.8,
+            "n": 67,
+            "probability": 0.848635801504712,
+            "frequency": 0.8208955223880597
+          },
+          {
+            "low": 0.9,
+            "n": 122,
+            "probability": 0.9600371589588079,
+            "frequency": 0.9672131147540983
+          }
+        ],
+        "confusion_matrix": [
+          [
+            1438,
+            228
+          ],
+          [
+            42,
+            387
+          ]
+        ]
       },
-      "rejected_entities": 78,
-      "tokens": 13676,
-      "summary_method": "extractive source sentences; no abstractive generation",
-      "api_cost_usd": 0,
-      "hardware_cost_usd": null
+      "test": {
+        "n": 4172,
+        "positive": 853,
+        "auprc": 0.8240788246297559,
+        "auroc": 0.9435478772084559,
+        "precision": 0.6204318936877077,
+        "recall": 0.8757327080890973,
+        "f1": 0.7263004375303841,
+        "threshold": 0.20637304856010874,
+        "review_fraction": 0.28859060402684567,
+        "brier": 0.07244281142591673,
+        "ece": 0.012780291866838139,
+        "reliability": [
+          {
+            "low": 0.0,
+            "n": 2629,
+            "probability": 0.01761402613451019,
+            "frequency": 0.02092050209205021
+          },
+          {
+            "low": 0.1,
+            "n": 322,
+            "probability": 0.1446642526963174,
+            "frequency": 0.15217391304347827
+          },
+          {
+            "low": 0.2,
+            "n": 193,
+            "probability": 0.24487866851080614,
+            "frequency": 0.21761658031088082
+          },
+          {
+            "low": 0.3,
+            "n": 158,
+            "probability": 0.34721213864159206,
+            "frequency": 0.35443037974683544
+          },
+          {
+            "low": 0.4,
+            "n": 100,
+            "probability": 0.45281872820450936,
+            "frequency": 0.4
+          },
+          {
+            "low": 0.5,
+            "n": 112,
+            "probability": 0.5475079658201537,
+            "frequency": 0.625
+          },
+          {
+            "low": 0.6,
+            "n": 123,
+            "probability": 0.6548308468285715,
+            "frequency": 0.7073170731707317
+          },
+          {
+            "low": 0.7,
+            "n": 132,
+            "probability": 0.7505867698141144,
+            "frequency": 0.7348484848484849
+          },
+          {
+            "low": 0.8,
+            "n": 143,
+            "probability": 0.8527802948094286,
+            "frequency": 0.8041958041958042
+          },
+          {
+            "low": 0.9,
+            "n": 260,
+            "probability": 0.9552486706353283,
+            "frequency": 0.9307692307692308
+          }
+        ],
+        "confusion_matrix": [
+          [
+            2862,
+            457
+          ],
+          [
+            106,
+            747
+          ]
+        ]
+      },
+      "uncalibrated_test_brier": 0.07248604158486682,
+      "test_ci95": {
+        "auprc": [
+          0.7892593329127341,
+          0.8535381578716477
+        ],
+        "recall": [
+          0.8460408126247052,
+          0.8992926302170343
+        ],
+        "review_fraction": [
+          0.26382450607323704,
+          0.3090754778112771
+        ]
+      },
+      "slices": {
+        "short_le_15_words": {
+          "n": 1844,
+          "positive": 390,
+          "auprc": 0.8622584095096093,
+          "auroc": 0.9579938630832716,
+          "precision": 0.677734375,
+          "recall": 0.8897435897435897,
+          "f1": 0.7694013303769401,
+          "threshold": 0.20637304856010874,
+          "review_fraction": 0.27765726681127983,
+          "brier": 0.06525777423551254,
+          "ece": 0.025981182478540144,
+          "reliability": [
+            {
+              "low": 0.0,
+              "n": 1239,
+              "probability": 0.012419482985068132,
+              "frequency": 0.020984665052461663
+            },
+            {
+              "low": 0.1,
+              "n": 89,
+              "probability": 0.14513088898849305,
+              "frequency": 0.1797752808988764
+            },
+            {
+              "low": 0.2,
+              "n": 57,
+              "probability": 0.24578129479349659,
+              "frequency": 0.14035087719298245
+            },
+            {
+              "low": 0.3,
+              "n": 50,
+              "probability": 0.3503171207413125,
+              "frequency": 0.4
+            },
+            {
+              "low": 0.4,
+              "n": 27,
+              "probability": 0.4508585311717564,
+              "frequency": 0.48148148148148145
+            },
+            {
+              "low": 0.5,
+              "n": 41,
+              "probability": 0.5439379445212098,
+              "frequency": 0.7073170731707317
+            },
+            {
+              "low": 0.6,
+              "n": 51,
+              "probability": 0.6525171936438912,
+              "frequency": 0.6666666666666666
+            },
+            {
+              "low": 0.7,
+              "n": 48,
+              "probability": 0.7508509132530715,
+              "frequency": 0.6875
+            },
+            {
+              "low": 0.8,
+              "n": 66,
+              "probability": 0.8517628755838853,
+              "frequency": 0.7424242424242424
+            },
+            {
+              "low": 0.9,
+              "n": 176,
+              "probability": 0.9614535828460298,
+              "frequency": 0.9204545454545454
+            }
+          ],
+          "confusion_matrix": [
+            [
+              1289,
+              165
+            ],
+            [
+              43,
+              347
+            ]
+          ]
+        },
+        "long_gt_15_words": {
+          "n": 2328,
+          "positive": 463,
+          "auprc": 0.7928743786856287,
+          "auroc": 0.9306238021065554,
+          "precision": 0.5780346820809249,
+          "recall": 0.8639308855291576,
+          "f1": 0.6926406926406926,
+          "threshold": 0.20637304856010874,
+          "review_fraction": 0.2972508591065292,
+          "brier": 0.07813405222450151,
+          "ece": 0.008841564004189962,
+          "reliability": [
+            {
+              "low": 0.0,
+              "n": 1390,
+              "probability": 0.022244269992178326,
+              "frequency": 0.020863309352517987
+            },
+            {
+              "low": 0.1,
+              "n": 233,
+              "probability": 0.14448600964909153,
+              "frequency": 0.14163090128755365
+            },
+            {
+              "low": 0.2,
+              "n": 136,
+              "probability": 0.24450036190703148,
+              "frequency": 0.25
+            },
+            {
+              "low": 0.3,
+              "n": 108,
+              "probability": 0.34577464692875853,
+              "frequency": 0.3333333333333333
+            },
+            {
+              "low": 0.4,
+              "n": 73,
+              "probability": 0.45354373258648645,
+              "frequency": 0.3698630136986301
+            },
+            {
+              "low": 0.5,
+              "n": 71,
+              "probability": 0.5495695274153185,
+              "frequency": 0.5774647887323944
+            },
+            {
+              "low": 0.6,
+              "n": 72,
+              "probability": 0.6564696845010535,
+              "frequency": 0.7361111111111112
+            },
+            {
+              "low": 0.7,
+              "n": 84,
+              "probability": 0.7504358307061391,
+              "frequency": 0.7619047619047619
+            },
+            {
+              "low": 0.8,
+              "n": 77,
+              "probability": 0.853652368431323,
+              "frequency": 0.8571428571428571
+            },
+            {
+              "low": 0.9,
+              "n": 84,
+              "probability": 0.9422479021938583,
+              "frequency": 0.9523809523809523
+            }
+          ],
+          "confusion_matrix": [
+            [
+              1573,
+              292
+            ],
+            [
+              63,
+              400
+            ]
+          ]
+        }
+      }
     }
   },
-  "dataset": {
-    "seed": "enumeration-v1",
-    "records": 166,
-    "sha256": "bc5c6abf6a90f5a381db1f03b7672d4cd0efccc74ec03e3e363fa26a65f10bb9",
-    "source": "Hand-authored synthetic templates and challenge cases; no patient records."
+  "selection_rule": "Highest tuning-split AUPRC among all evaluated candidates; review threshold fixed on independent policy split.",
+  "split_sizes": {
+    "train": 10448,
+    "tune": 2092,
+    "calibration": 2088,
+    "policy": 2095,
+    "test": 4172
   },
-  "python": "3.13.2",
-  "llm_status": "executed (saved-response normalization replay)",
-  "systems": {
-    "dictionary": {
-      "splits": {
-        "challenge": {
-          "n": 16,
-          "tp": 7,
-          "fp": 14,
-          "fn": 14,
-          "precision": 0.3333333333333333,
-          "recall": 0.3333333333333333,
-          "f1": 0.3333333333333333,
-          "f1_ci95": [
-            0.125,
-            0.5238095238095238
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 5,
-              "fp": 11,
-              "fn": 11,
-              "precision": 0.3125,
-              "recall": 0.3125,
-              "f1": 0.3125
-            },
-            "medication": {
-              "tp": 1,
-              "fp": 2,
-              "fn": 2,
-              "precision": 0.3333333333333333,
-              "recall": 0.3333333333333333,
-              "f1": 0.3333333333333333
-            },
-            "procedure": {
-              "tp": 0,
-              "fp": 1,
-              "fn": 1,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "follow_up": {
-              "tp": 1,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "by_age": {
-            "18–39": {
-              "n": 6,
-              "tp": 2,
-              "fp": 7,
-              "fn": 7,
-              "precision": 0.2222222222222222,
-              "recall": 0.2222222222222222,
-              "f1": 0.2222222222222222
-            },
-            "40–64": {
-              "n": 5,
-              "tp": 1,
-              "fp": 5,
-              "fn": 5,
-              "precision": 0.16666666666666666,
-              "recall": 0.16666666666666666,
-              "f1": 0.16666666666666666
-            },
-            "65+": {
-              "n": 5,
-              "tp": 4,
-              "fp": 2,
-              "fn": 2,
-              "precision": 0.6666666666666666,
-              "recall": 0.6666666666666666,
-              "f1": 0.6666666666666666
-            }
-          },
-          "assertion_confusion": {
-            "negated → present": 6,
-            "present → present": 6,
-            "uncertain → present": 2,
-            "historical → present": 3,
-            "family → present": 2,
-            "planned → present": 1,
-            "planned → planned": 1
-          }
-        },
-        "dev": {
-          "n": 75,
-          "tp": 165,
-          "fp": 135,
-          "fn": 135,
-          "precision": 0.55,
-          "recall": 0.55,
-          "f1": 0.55,
-          "f1_ci95": [
-            0.53,
-            0.57
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 15,
-              "fp": 60,
-              "fn": 60,
-              "precision": 0.2,
-              "recall": 0.2,
-              "f1": 0.2
-            },
-            "medication": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "procedure": {
-              "tp": 0,
-              "fp": 75,
-              "fn": 75,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "follow_up": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "by_age": {
-            "18–39": {
-              "n": 25,
-              "tp": 55,
-              "fp": 45,
-              "fn": 45,
-              "precision": 0.55,
-              "recall": 0.55,
-              "f1": 0.55
-            },
-            "40–64": {
-              "n": 25,
-              "tp": 55,
-              "fp": 45,
-              "fn": 45,
-              "precision": 0.55,
-              "recall": 0.55,
-              "f1": 0.55
-            },
-            "65+": {
-              "n": 25,
-              "tp": 55,
-              "fp": 45,
-              "fn": 45,
-              "precision": 0.55,
-              "recall": 0.55,
-              "f1": 0.55
-            }
-          },
-          "assertion_confusion": {
-            "present → present": 90,
-            "planned → present": 75,
-            "planned → planned": 75,
-            "negated → present": 15,
-            "uncertain → present": 15,
-            "historical → present": 15,
-            "family → present": 15
-          }
-        },
-        "test": {
-          "n": 75,
-          "tp": 165,
-          "fp": 135,
-          "fn": 135,
-          "precision": 0.55,
-          "recall": 0.55,
-          "f1": 0.55,
-          "f1_ci95": [
-            0.53,
-            0.57
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 15,
-              "fp": 60,
-              "fn": 60,
-              "precision": 0.2,
-              "recall": 0.2,
-              "f1": 0.2
-            },
-            "medication": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "procedure": {
-              "tp": 0,
-              "fp": 75,
-              "fn": 75,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            },
-            "follow_up": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "by_age": {
-            "18–39": {
-              "n": 25,
-              "tp": 55,
-              "fp": 45,
-              "fn": 45,
-              "precision": 0.55,
-              "recall": 0.55,
-              "f1": 0.55
-            },
-            "40–64": {
-              "n": 25,
-              "tp": 55,
-              "fp": 45,
-              "fn": 45,
-              "precision": 0.55,
-              "recall": 0.55,
-              "f1": 0.55
-            },
-            "65+": {
-              "n": 25,
-              "tp": 55,
-              "fp": 45,
-              "fn": 45,
-              "precision": 0.55,
-              "recall": 0.55,
-              "f1": 0.55
-            }
-          },
-          "assertion_confusion": {
-            "present → present": 90,
-            "planned → present": 75,
-            "planned → planned": 75,
-            "negated → present": 15,
-            "uncertain → present": 15,
-            "historical → present": 15,
-            "family → present": 15
-          }
-        }
+  "deployment_status": "Local research API; not clinically validated or deployed to healthcare systems.",
+  "entity_extraction": {
+    "tp": 811,
+    "fp": 1326,
+    "fn": 1248,
+    "micro_f1": 0.386558627264061,
+    "by_kind": {
+      "DRUG": {
+        "tp": 399,
+        "fp": 533,
+        "fn": 524,
+        "f1": 0.43018867924528303
       },
-      "evaluated_note_ids": [
-        "dev-000",
-        "dev-001",
-        "dev-002",
-        "dev-003",
-        "dev-004",
-        "dev-005",
-        "dev-006",
-        "dev-007",
-        "dev-008",
-        "dev-009",
-        "dev-010",
-        "dev-011",
-        "dev-012",
-        "dev-013",
-        "dev-014",
-        "dev-015",
-        "dev-016",
-        "dev-017",
-        "dev-018",
-        "dev-019",
-        "dev-020",
-        "dev-021",
-        "dev-022",
-        "dev-023",
-        "dev-024",
-        "dev-025",
-        "dev-026",
-        "dev-027",
-        "dev-028",
-        "dev-029",
-        "dev-030",
-        "dev-031",
-        "dev-032",
-        "dev-033",
-        "dev-034",
-        "dev-035",
-        "dev-036",
-        "dev-037",
-        "dev-038",
-        "dev-039",
-        "dev-040",
-        "dev-041",
-        "dev-042",
-        "dev-043",
-        "dev-044",
-        "dev-045",
-        "dev-046",
-        "dev-047",
-        "dev-048",
-        "dev-049",
-        "dev-050",
-        "dev-051",
-        "dev-052",
-        "dev-053",
-        "dev-054",
-        "dev-055",
-        "dev-056",
-        "dev-057",
-        "dev-058",
-        "dev-059",
-        "dev-060",
-        "dev-061",
-        "dev-062",
-        "dev-063",
-        "dev-064",
-        "dev-065",
-        "dev-066",
-        "dev-067",
-        "dev-068",
-        "dev-069",
-        "dev-070",
-        "dev-071",
-        "dev-072",
-        "dev-073",
-        "dev-074",
-        "test-000",
-        "test-001",
-        "test-002",
-        "test-003",
-        "test-004",
-        "test-005",
-        "test-006",
-        "test-007",
-        "test-008",
-        "test-009",
-        "test-010",
-        "test-011",
-        "test-012",
-        "test-013",
-        "test-014",
-        "test-015",
-        "test-016",
-        "test-017",
-        "test-018",
-        "test-019",
-        "test-020",
-        "test-021",
-        "test-022",
-        "test-023",
-        "test-024",
-        "test-025",
-        "test-026",
-        "test-027",
-        "test-028",
-        "test-029",
-        "test-030",
-        "test-031",
-        "test-032",
-        "test-033",
-        "test-034",
-        "test-035",
-        "test-036",
-        "test-037",
-        "test-038",
-        "test-039",
-        "test-040",
-        "test-041",
-        "test-042",
-        "test-043",
-        "test-044",
-        "test-045",
-        "test-046",
-        "test-047",
-        "test-048",
-        "test-049",
-        "test-050",
-        "test-051",
-        "test-052",
-        "test-053",
-        "test-054",
-        "test-055",
-        "test-056",
-        "test-057",
-        "test-058",
-        "test-059",
-        "test-060",
-        "test-061",
-        "test-062",
-        "test-063",
-        "test-064",
-        "test-065",
-        "test-066",
-        "test-067",
-        "test-068",
-        "test-069",
-        "test-070",
-        "test-071",
-        "test-072",
-        "test-073",
-        "test-074",
-        "challenge-000",
-        "challenge-001",
-        "challenge-002",
-        "challenge-003",
-        "challenge-004",
-        "challenge-005",
-        "challenge-006",
-        "challenge-007",
-        "challenge-008",
-        "challenge-009",
-        "challenge-010",
-        "challenge-011",
-        "challenge-012",
-        "challenge-013",
-        "challenge-014",
-        "challenge-015"
-      ],
-      "latency_ms": {
-        "median": 0.09099999442696571,
-        "p95": 0.09591702837496996
-      },
-      "rejected_entities": 0,
-      "tokens": 0,
-      "summary_method": "extractive source sentences; no abstractive generation",
-      "api_cost_usd": 0,
-      "hardware_cost_usd": null
+      "EFFECT": {
+        "tp": 412,
+        "fp": 793,
+        "fn": 724,
+        "f1": 0.35198633062793677
+      }
     },
-    "contextual": {
-      "splits": {
-        "challenge": {
-          "n": 16,
-          "tp": 16,
-          "fp": 5,
-          "fn": 5,
-          "precision": 0.7619047619047619,
-          "recall": 0.7619047619047619,
-          "f1": 0.7619047619047619,
-          "f1_ci95": [
-            0.55,
-            0.9230769230769231
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 11,
-              "fp": 5,
-              "fn": 5,
-              "precision": 0.6875,
-              "recall": 0.6875,
-              "f1": 0.6875
-            },
-            "medication": {
-              "tp": 3,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "procedure": {
-              "tp": 1,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "follow_up": {
-              "tp": 1,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "by_age": {
-            "18–39": {
-              "n": 6,
-              "tp": 8,
-              "fp": 1,
-              "fn": 1,
-              "precision": 0.8888888888888888,
-              "recall": 0.8888888888888888,
-              "f1": 0.8888888888888888
-            },
-            "40–64": {
-              "n": 5,
-              "tp": 4,
-              "fp": 2,
-              "fn": 2,
-              "precision": 0.6666666666666666,
-              "recall": 0.6666666666666666,
-              "f1": 0.6666666666666666
-            },
-            "65+": {
-              "n": 5,
-              "tp": 4,
-              "fp": 2,
-              "fn": 2,
-              "precision": 0.6666666666666666,
-              "recall": 0.6666666666666666,
-              "f1": 0.6666666666666666
-            }
-          },
-          "assertion_confusion": {
-            "negated → negated": 5,
-            "present → present": 5,
-            "negated → present": 1,
-            "uncertain → present": 1,
-            "historical → present": 1,
-            "family → family": 1,
-            "historical → historical": 2,
-            "planned → planned": 2,
-            "present → negated": 1,
-            "uncertain → uncertain": 1,
-            "family → present": 1
-          }
-        },
-        "dev": {
-          "n": 75,
-          "tp": 300,
-          "fp": 0,
-          "fn": 0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "f1_ci95": [
-            1.0,
-            1.0
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "medication": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "procedure": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "follow_up": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "by_age": {
-            "18–39": {
-              "n": 25,
-              "tp": 100,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "40–64": {
-              "n": 25,
-              "tp": 100,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "65+": {
-              "n": 25,
-              "tp": 100,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "assertion_confusion": {
-            "present → present": 90,
-            "planned → planned": 150,
-            "negated → negated": 15,
-            "uncertain → uncertain": 15,
-            "historical → historical": 15,
-            "family → family": 15
-          }
-        },
-        "test": {
-          "n": 75,
-          "tp": 300,
-          "fp": 0,
-          "fn": 0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "f1_ci95": [
-            1.0,
-            1.0
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "medication": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "procedure": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "follow_up": {
-              "tp": 75,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "by_age": {
-            "18–39": {
-              "n": 25,
-              "tp": 100,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "40–64": {
-              "n": 25,
-              "tp": 100,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "65+": {
-              "n": 25,
-              "tp": 100,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "assertion_confusion": {
-            "present → present": 90,
-            "planned → planned": 150,
-            "negated → negated": 15,
-            "uncertain → uncertain": 15,
-            "historical → historical": 15,
-            "family → family": 15
-          }
-        }
+    "scope": "Exact ADE-associated spans in all test sentences; relation causality and arbitrary drug mentions are not annotated exhaustively.",
+    "train_seconds": 13.526449917000718,
+    "overlapping_train_spans_excluded": 39,
+    "framework": "sklearn-crfsuite / CRFsuite",
+    "train_sentences": 4272,
+    "selected_training_policy": "balanced_sentences",
+    "tuning_trials": [
+      {
+        "policy": "all_sentences",
+        "n": 10448,
+        "tune_exact_micro_f1": 0.3471947194719472
       },
-      "evaluated_note_ids": [
-        "dev-000",
-        "dev-001",
-        "dev-002",
-        "dev-003",
-        "dev-004",
-        "dev-005",
-        "dev-006",
-        "dev-007",
-        "dev-008",
-        "dev-009",
-        "dev-010",
-        "dev-011",
-        "dev-012",
-        "dev-013",
-        "dev-014",
-        "dev-015",
-        "dev-016",
-        "dev-017",
-        "dev-018",
-        "dev-019",
-        "dev-020",
-        "dev-021",
-        "dev-022",
-        "dev-023",
-        "dev-024",
-        "dev-025",
-        "dev-026",
-        "dev-027",
-        "dev-028",
-        "dev-029",
-        "dev-030",
-        "dev-031",
-        "dev-032",
-        "dev-033",
-        "dev-034",
-        "dev-035",
-        "dev-036",
-        "dev-037",
-        "dev-038",
-        "dev-039",
-        "dev-040",
-        "dev-041",
-        "dev-042",
-        "dev-043",
-        "dev-044",
-        "dev-045",
-        "dev-046",
-        "dev-047",
-        "dev-048",
-        "dev-049",
-        "dev-050",
-        "dev-051",
-        "dev-052",
-        "dev-053",
-        "dev-054",
-        "dev-055",
-        "dev-056",
-        "dev-057",
-        "dev-058",
-        "dev-059",
-        "dev-060",
-        "dev-061",
-        "dev-062",
-        "dev-063",
-        "dev-064",
-        "dev-065",
-        "dev-066",
-        "dev-067",
-        "dev-068",
-        "dev-069",
-        "dev-070",
-        "dev-071",
-        "dev-072",
-        "dev-073",
-        "dev-074",
-        "test-000",
-        "test-001",
-        "test-002",
-        "test-003",
-        "test-004",
-        "test-005",
-        "test-006",
-        "test-007",
-        "test-008",
-        "test-009",
-        "test-010",
-        "test-011",
-        "test-012",
-        "test-013",
-        "test-014",
-        "test-015",
-        "test-016",
-        "test-017",
-        "test-018",
-        "test-019",
-        "test-020",
-        "test-021",
-        "test-022",
-        "test-023",
-        "test-024",
-        "test-025",
-        "test-026",
-        "test-027",
-        "test-028",
-        "test-029",
-        "test-030",
-        "test-031",
-        "test-032",
-        "test-033",
-        "test-034",
-        "test-035",
-        "test-036",
-        "test-037",
-        "test-038",
-        "test-039",
-        "test-040",
-        "test-041",
-        "test-042",
-        "test-043",
-        "test-044",
-        "test-045",
-        "test-046",
-        "test-047",
-        "test-048",
-        "test-049",
-        "test-050",
-        "test-051",
-        "test-052",
-        "test-053",
-        "test-054",
-        "test-055",
-        "test-056",
-        "test-057",
-        "test-058",
-        "test-059",
-        "test-060",
-        "test-061",
-        "test-062",
-        "test-063",
-        "test-064",
-        "test-065",
-        "test-066",
-        "test-067",
-        "test-068",
-        "test-069",
-        "test-070",
-        "test-071",
-        "test-072",
-        "test-073",
-        "test-074",
-        "challenge-000",
-        "challenge-001",
-        "challenge-002",
-        "challenge-003",
-        "challenge-004",
-        "challenge-005",
-        "challenge-006",
-        "challenge-007",
-        "challenge-008",
-        "challenge-009",
-        "challenge-010",
-        "challenge-011",
-        "challenge-012",
-        "challenge-013",
-        "challenge-014",
-        "challenge-015"
-      ],
-      "latency_ms": {
-        "median": 0.0956665026023984,
-        "p95": 0.11137500405311584
-      },
-      "rejected_entities": 0,
-      "tokens": 0,
-      "summary_method": "extractive source sentences; no abstractive generation",
-      "api_cost_usd": 0,
-      "hardware_cost_usd": null
-    },
-    "ollama:llama3.1:latest": {
-      "splits": {
-        "challenge": {
-          "n": 16,
-          "tp": 17,
-          "fp": 4,
-          "fn": 4,
-          "precision": 0.8095238095238095,
-          "recall": 0.8095238095238095,
-          "f1": 0.8095238095238095,
-          "f1_ci95": [
-            0.6190476190476191,
-            0.9565217391304348
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 14,
-              "fp": 2,
-              "fn": 2,
-              "precision": 0.875,
-              "recall": 0.875,
-              "f1": 0.875
-            },
-            "medication": {
-              "tp": 2,
-              "fp": 1,
-              "fn": 1,
-              "precision": 0.6666666666666666,
-              "recall": 0.6666666666666666,
-              "f1": 0.6666666666666666
-            },
-            "procedure": {
-              "tp": 1,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "follow_up": {
-              "tp": 0,
-              "fp": 1,
-              "fn": 1,
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0
-            }
-          },
-          "by_age": {
-            "18–39": {
-              "n": 6,
-              "tp": 7,
-              "fp": 2,
-              "fn": 2,
-              "precision": 0.7777777777777778,
-              "recall": 0.7777777777777778,
-              "f1": 0.7777777777777778
-            },
-            "40–64": {
-              "n": 5,
-              "tp": 4,
-              "fp": 2,
-              "fn": 2,
-              "precision": 0.6666666666666666,
-              "recall": 0.6666666666666666,
-              "f1": 0.6666666666666666
-            },
-            "65+": {
-              "n": 5,
-              "tp": 6,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            }
-          },
-          "assertion_confusion": {
-            "negated → negated": 6,
-            "present → present": 6,
-            "uncertain → uncertain": 2,
-            "historical → historical": 1,
-            "family → family": 1,
-            "historical → negated": 1,
-            "planned → planned": 1,
-            "family → present": 1,
-            "planned → present": 1,
-            "historical → present": 1
-          }
-        },
-        "test": {
-          "n": 15,
-          "tp": 55,
-          "fp": 4,
-          "fn": 5,
-          "precision": 0.9322033898305084,
-          "recall": 0.9166666666666666,
-          "f1": 0.9243697478991597,
-          "f1_ci95": [
-            0.8571428571428571,
-            0.9833333333333333
-          ],
-          "by_kind": {
-            "condition": {
-              "tp": 12,
-              "fp": 2,
-              "fn": 3,
-              "precision": 0.8571428571428571,
-              "recall": 0.8,
-              "f1": 0.8275862068965517
-            },
-            "medication": {
-              "tp": 15,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "procedure": {
-              "tp": 14,
-              "fp": 1,
-              "fn": 1,
-              "precision": 0.9333333333333333,
-              "recall": 0.9333333333333333,
-              "f1": 0.9333333333333333
-            },
-            "follow_up": {
-              "tp": 14,
-              "fp": 1,
-              "fn": 1,
-              "precision": 0.9333333333333333,
-              "recall": 0.9333333333333333,
-              "f1": 0.9333333333333333
-            }
-          },
-          "by_age": {
-            "18–39": {
-              "n": 2,
-              "tp": 8,
-              "fp": 0,
-              "fn": 0,
-              "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
-            },
-            "40–64": {
-              "n": 6,
-              "tp": 20,
-              "fp": 3,
-              "fn": 4,
-              "precision": 0.8695652173913043,
-              "recall": 0.8333333333333334,
-              "f1": 0.851063829787234
-            },
-            "65+": {
-              "n": 7,
-              "tp": 27,
-              "fp": 1,
-              "fn": 1,
-              "precision": 0.9642857142857143,
-              "recall": 0.9642857142857143,
-              "f1": 0.9642857142857143
-            }
-          },
-          "assertion_confusion": {
-            "negated → negated": 3,
-            "present → present": 18,
-            "planned → planned": 28,
-            "historical → historical": 2,
-            "family → family": 4,
-            "uncertain → present": 2,
-            "planned → present": 2
-          }
-        }
-      },
-      "evaluated_note_ids": [
-        "test-014",
-        "test-003",
-        "test-035",
-        "test-031",
-        "test-028",
-        "test-017",
-        "test-013",
-        "test-011",
-        "test-054",
-        "test-004",
-        "test-073",
-        "test-067",
-        "test-068",
-        "test-074",
-        "test-032",
-        "challenge-000",
-        "challenge-001",
-        "challenge-002",
-        "challenge-003",
-        "challenge-004",
-        "challenge-005",
-        "challenge-006",
-        "challenge-007",
-        "challenge-008",
-        "challenge-009",
-        "challenge-010",
-        "challenge-011",
-        "challenge-012",
-        "challenge-013",
-        "challenge-014",
-        "challenge-015"
-      ],
-      "latency_ms": {
-        "median": 9345.677124976646,
-        "p95": 12193.849875009619
-      },
-      "rejected_entities": 2,
-      "tokens": 13676,
-      "summary_method": "extractive source sentences; no abstractive generation",
-      "api_cost_usd": 0,
-      "hardware_cost_usd": null,
-      "validation_policy": "normalized-v2: unique alias inside exact source quote; source-derived follow-up text",
-      "latency_scope": "Original inference + strict-v1 validation; offline normalization replay excluded"
-    }
-  },
-  "paired_comparison": {
-    "split": "test",
-    "delta_f1": 0.44999999999999996,
-    "ci95": [
-      0.43000000000000005,
-      0.47
+      {
+        "policy": "balanced_sentences",
+        "n": 4272,
+        "tune_exact_micro_f1": 0.40058479532163743
+      }
     ],
-    "bootstrap_samples": 500
+    "lexicon": "Entity-token membership fitted on training annotations only"
   },
-  "metric": "Exact kind, canonical value, assertion, start and end; micro F1",
-  "limitations": [
-    "Template-generated benchmark is not clinical validation.",
-    "Age groups are synthetic metadata; slice parity does not establish fairness.",
-    "Citation matching does not establish semantic correctness."
-  ]
+  "selected_model": "biomedbert_frozen",
+  "offline_comparator": "biomedbert_frozen",
+  "gated_entity_extraction": {
+    "tp": 742,
+    "fp": 508,
+    "fn": 1317,
+    "micro_f1": 0.44847385917195526,
+    "by_kind": {
+      "DRUG": {
+        "tp": 356,
+        "fp": 211,
+        "fn": 567,
+        "f1": 0.4778523489932886
+      },
+      "EFFECT": {
+        "tp": 386,
+        "fp": 297,
+        "fn": 750,
+        "f1": 0.4244090159428257
+      }
+    },
+    "scope": "Exact ADE-associated spans in all test sentences; relation causality and arbitrary drug mentions are not annotated exhaustively."
+  }
 }

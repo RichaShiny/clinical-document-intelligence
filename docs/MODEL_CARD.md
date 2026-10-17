@@ -1,26 +1,21 @@
-# Model and system card
+# System/model card
 
-## Intended use
+**Intended use:** local research and portfolio demonstration of literature safety-review prioritization. Users are analysts reviewing published case reports. The tool retains evidence and manual reviewer judgment.
 
-Educational healthcare data science portfolio and local experimentation on synthetic text. Outputs are review artifacts for a human analyst. Not designed for diagnosis, prescribing, patient communication, triage, insurance decisions, autonomous chart updates, or clinical use.
+**Excluded uses:** patient diagnosis or treatment, medication discontinuation, clinical triage, autonomous safety-case filing, regulatory conclusions, causal attribution, and claims of verified adverse-event incidence. There has been no clinical validation or deployment in a healthcare organization.
 
-## Components
+## Training and inference
 
-- Dictionary NLP v1: hand-authored alias vocabulary, no learned weights.
-- Contextual NLP v1: prefix-based assertion heuristics, no learned weights.
-- Optional pretrained Llama 3.1 8B via local Ollama: structured extraction, no fine-tuning. The model remains subject to its own license. A pinned digest and environment details for the measured run are recorded separately when available.
-- Sentence selection: deterministic extractive summaries, not an abstractive generation model.
+The dataset, five-way group split, measured model parameters and scores are documented in the README and reports. The default candidate is selected by tune AUPRC. BiomedBERT is a frozen biomedical text encoder with a learned standardized logistic head; the encoder itself was not trained or fine-tuned here. Other trained components include lexical logistic regression, a scratch PyTorch Deep Averaging Network, calibrators and a CRF.
 
-The code uses Python's standard library; evaluation does not depend on a training framework. The dashboard is plain HTML/CSS/JavaScript. No PyTorch training, scikit-learn classifier, spaCy clinical model, BioBERT, or ClinicalBERT is claimed.
+The API groups submitted text into heuristic sentences, estimates an ADE-related probability, applies the learned review threshold and runs the CRF on flagged sentences. Entities and summary evidence remain verbatim source spans. Output is reviewable evidence, not a generated clinical assessment. A “lower priority” sentence is not declared safe or ADE-free.
 
-## Evidence and known weaknesses
+## Actual limitations
 
-Full baseline results and optional measured LLM results are in `reports/metrics.json`. All baseline notes and evaluated LLM notes have inspectable prediction/error details in the dashboard exports. Baseline contextual F1 is 1.000 on 75 templated test notes and 0.762 on 16 challenge notes. This gap illustrates narrow test coverage. The synthetic dataset cannot establish safety, performance on hospital documents, calibration, fairness or clinical benefit.
+Ranking is stronger than exact entity extraction. The latter's lower F1 is visible in both ungated and end-to-end metrics. Thresholds fitted to 90% policy recall can underperform that target on test; this happens in the measured biomedical candidate. Corpus prevalence and writing style differ from general clinical documents and routine publications. Probability calibration is distribution-dependent.
 
-Rules miss post-mention cues (“Pneumonia was ruled out”), misread “No change in asthma treatment,” and lack complex experiencer/temporal reasoning. LLM quotes can be genuine while assertion labels are wrong. Accepted LLM entities are not independently verified clinical facts. Missing or rejected mentions can remove important material from summary cards.
+Annotations are sparse and selected; not every drug or condition mention is a target. Overlapping and ambiguous mentions reduce evaluable coverage. The model does not distinguish event severity, chronology or causal certainty reliably, and it does not link all predicted drugs to effects. Pretraining text may overlap source literature. Human review remains necessary even when source spans are correct.
 
-The local LLM is nondeterministic across environments despite a zero temperature and fixed seed. The generator's data and task labels are limited, and pretrained model training overlap is unknown. There is no calibrated confidence score or automated clinical acceptance threshold.
+## Promotion requirements
 
-## Release gate for any future clinical study
-
-A designated clinical owner must establish the intended use, select an authorized dataset, independently adjudicate labels, specify risk-based thresholds before evaluation, review subgroup coverage and harmful errors, and establish monitoring and rollback procedures. This repository does not implement or satisfy that gate.
+A real deployment needs authorized data/model use, an independent representative evaluation with clinician adjudication, risk-based acceptance criteria, workload/usability studies, access/security review, production monitoring, and a documented release/rollback owner. Those requirements are not satisfied merely by the API, Dockerfile or this benchmark. Dataset rights are not established for commercial redistribution.

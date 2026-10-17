@@ -1,27 +1,25 @@
-# Data card
+# Dataset card and annotation audit
 
-## Provenance and scope
+## Origin and task
 
-All committed note text and gold labels are authored in `clinical_intelligence/dataset.py`. No EHR export, hospital record, scraped patient content, or external dataset is included. Gold concepts and assertions are specified alongside each sentence **before** extraction; they are not the baseline's outputs relabeled as truth. This independence prevents circular labeling but does not remove author bias.
+The data come from `ade-benchmark-corpus/ade_corpus_v2` on Hugging Face, revision `4ba01c71687dd7c996597042449448ea312126cf`. The classification and drug/ADE relation Parquet files are downloaded directly from that revision. Their original text is from MEDLINE medical case reports, not synthetic EHR notes. The research corpus is described by [Gurulingappa et al.](https://pmc.ncbi.nlm.nih.gov/articles/PMC3599676/).
 
-There are 75 development notes, 75 template-test notes, and 16 hand-authored challenge notes. Each template split crosses five conditions, five assertion contexts, and three synthetic age groups. Template notes contain four labeled entities. Challenge notes vary in length and coverage. Clinical vocabulary is deliberately limited to five conditions, four medications, two procedures, and follow-up instructions. Abbreviations map to the same concepts.
+The classification target is whether a sentence is ADE-related according to corpus annotations. It is not a causal probability, event severity, patient risk estimate, or a calibrated probability that a medication is unsafe. The corpus is a selected, historical English case-report sample; it is not representative of all literature or healthcare settings.
 
-Synthetic age groups are metadata, not demographics drawn from a population. Every note has `synthetic: true`. IDs encode the split. Notes are in English and represent a narrow outpatient-style demonstration. There are no real dates, names, addresses, patient IDs, or outcome labels. This is not a statistically representative healthcare dataset.
+## Document provenance
 
-## Files and checks
+The HF classification table has text and labels but no PMID. A pinned [source distribution](https://github.com/trunghlt/AdverseDrugReaction/tree/2851af96e26050cf551a2e1f716ff861f7b1059b/ADE-Corpus-V2) supplies source PubMed IDs. This distribution is also cited by the published TextCNN work linked in the research note. All retained classification sentences match after whitespace normalization and case folding. The pipeline records the unmatched count and excludes unmatched records rather than inventing document IDs.
 
-`data/synthetic_notes.jsonl` contains text and gold entity spans. Character offsets are zero-based, end-exclusive, Python Unicode offsets. `data/manifest.json` records count, generator version and SHA-256. CI checks deterministic regeneration. Development and test use different sentence templates but share vocabulary and much of the document structure; they are not independent clinical cohorts. Each template appears across age groups, introducing correlation. Bootstrap intervals cannot resolve that limitation.
+Exact/normalized duplicate sentences are collapsed; conflicting labels would be removed. Multi-document duplicate sentences connect their source PMIDs into one group using union-find. This stops duplicates linking papers across train/test. Similar paraphrases are not automatically detected; this remains a residual leakage risk. Grouping at case-report PMID does not guarantee unique patients across different publications.
 
-## External data options
+## Actual audit
 
-Hugging Face hosts datasets with different origins and access conditions. Hosting and a license badge alone do not establish rights to redistribute patient text.
+The pipeline retained 20,895 normalized sentences from 2,972 source documents, forming 2,911 connected document groups. It removed 2,621 repeated rows, found zero label conflicts and zero missing PMID mappings. All file hashes and split counts are in `reports/data_manifest.json`. The cleaned class prevalence is lower than the raw row prevalence because positive sentences often occur once per annotated relation in the raw data.
 
-| Resource | Nature | Suitable extension |
-|---|---|---|
-| [BC5CDR on Hugging Face](https://huggingface.co/datasets/tner/bc5cdr) | Annotated biomedical literature; chemicals and diseases | A separate NER benchmark; not clinical-note assertion evaluation |
-| [Asclepius](https://huggingface.co/datasets/starmpcc/Asclepius-Synthetic-Clinical-Notes) | Synthetic clinical notes | More varied synthetic development examples; not real patient validation |
-| [MIMIC-IV-Note](https://physionet.org/content/mimic-iv-note/2.2/) | Real deidentified clinical notes, credentialed access | Local clinical-note evaluation after training, credentialing and DUA |
+For entity training, literal drug/effect surfaces are aligned to the sentence when each occurs uniquely. Ambiguous repeated mentions are excluded (725 annotation instances, including repeated relation rows); original HF offsets disagree with unique literal alignment or are missing in 37 aligned instances. Raw source-distribution offsets are document-level and must not be naively interpreted as sentence offsets. Overlapping spans cannot all be represented by a single BIO sequence; the selected CRF report records excluded training overlaps.
 
-Before adding a corpus: verify original source and terms, preserve the official split, define task and label mappings, check duplicates at document/patient level, and document whether entities, assertions or summaries have independently verified labels. MIMIC notes and patient-level derived outputs must not be added to this public repository. Public availability is not blanket authorization for redistribution or remote-model processing. No external dataset integration or validation is claimed in this version.
+These exclusions produce a restricted span benchmark. Some excluded or incompletely annotated mentions may be counted as model false positives; this is not an exhaustive drug/symptom NER dataset. Negative sentences do not carry exhaustive drug entity labels. The CRF target is ADE-associated mentions under this corpus's annotation scheme.
 
-Source pages checked October 16, 2026.
+## Access, rights and storage
+
+The HF card reports `license: unknown` and has incomplete provenance/licensing fields. Code and aggregate reports are public; raw text, per-sentence predictions, embeddings, trained weights and reviewer annotations are ignored in Git. The pipeline provides reproducible local acquisition without claiming commercial redistribution permission. Any commercial use needs rights review. No private patient-chart access is implied by this public literature corpus.

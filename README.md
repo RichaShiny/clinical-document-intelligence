@@ -1,117 +1,125 @@
-# Clinical Document Intelligence
+# Clinical Document Intelligence — ADE Evidence Triage
 
-**A reproducible clinical NLP evaluation lab: extract structured mentions, preserve assertion context, and trace every summary sentence to its source.**
+**A real-data machine learning system for prioritizing adverse-drug-event evidence in medical case reports.**
 
-Built as a healthcare data science portfolio project. The public demo uses **166 hand-authored synthetic notes**, not patient records. It compares dictionary NLP, context-aware NLP, and an optional local Llama 3.1 extraction system. The dashboard makes false positives and missed mentions inspectable rather than hiding them behind one score.
+Safety reviewers must find reports that describe possible medication-related harm among large volumes of literature. This project trains and compares models to flag ADE-related sentences, extracts drug/effect mentions, preserves source evidence, and exposes a review API and workbench. It uses **real MEDLINE case-report sentences downloaded from Hugging Face**, not generated clinical notes.
 
-> Research demonstration. No diagnosis, treatment recommendation, clinical validation, HIPAA certification, or FDA clearance is claimed.
+**20,895 deduplicated sentences · 2,972 source reports · 4,172 test sentences · document-grouped splits.**
 
-## Run in two minutes
+This is production-oriented research software with an authenticated inference service, versioned artifacts, tests, telemetry, and container configuration. It is **not a clinically validated product, an adverse-event reporting system, or proof of drug causation**.
 
-Python 3.11+; the baseline, statistical evaluation, tests, and dashboard require **no third-party Python packages**.
+## Measured model comparison
+
+<!-- RESULTS_START -->
+
+| Model | Test AUPRC | Recall | Precision | Sentences flagged |
+|---|---:|---:|---:|---:|
+| tfidf_logistic | 0.733 | 90.0% | 45.2% | 40.7% |
+| pytorch_dan | 0.581 | 89.4% | 33.1% | 55.3% |
+| biomedbert_frozen | 0.824 | 87.6% | 62.0% | 28.9% |
+
+Selected by tuning AUPRC: **biomedbert_frozen**. Ungated CRF exact span micro F1: **0.387**; gated end-to-end span micro F1: **0.448**.
+
+<!-- RESULTS_END -->
+
+Model selection uses tuning-set AUPRC. Probability calibration and the review threshold use two additional, separate splits. Test recall is measured, not assumed to meet the policy target. Span extraction is evaluated separately and remains exploratory.
+
+## The actual models and frameworks
+
+| Component | Model | Framework | What is learned |
+|---|---|---|---|
+| Lexical baseline | Word/character TF-IDF + logistic regression | scikit-learn | Vocabulary, IDF and classifier coefficients |
+| Neural baseline | Deep Averaging Network: 96-dim embeddings → 64-unit MLP | PyTorch | Word embeddings and network weights, from scratch |
+| Biomedical comparator and serving candidate | BiomedBERT masked-mean embeddings + logistic head | Hugging Face Transformers, PyTorch, scikit-learn | Classifier and scaling; **encoder is frozen, not fine-tuned** |
+| Structured evidence | BIO conditional random field with contextual and train-only lexical features | sklearn-crfsuite / CRFsuite | Sequence labeling weights for ADE-associated DRUG/EFFECT spans |
+| Serving | Calibrated selected classifier + gated CRF | FastAPI / Pydantic / Uvicorn | No online learning |
+
+No Ollama dependency, no fabricated benchmark scores, no synthetic training dataset. Unit-test fixtures are small artificial inputs used only to verify software behavior.
+
+## Reproduce the full experiment
+
+Python 3.13 is the validated environment. Run these commands from the repository root. Data, model weights, embeddings and reviewer records stay in ignored `runtime/`.
 
 ```bash
 git clone https://github.com/RichaShiny/clinical-document-intelligence.git
 cd clinical-document-intelligence
-python -m unittest discover -s tests -v
-python -m clinical_intelligence.pipeline
-python -m http.server 8765 --bind 127.0.0.1 --directory dashboard
+python3.13 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pip install -e . --no-deps
+
+# Real corpus download, provenance recovery, deduplication, grouped splits
+python -m clinical_ade.data
+
+# Train lexical + PyTorch models, calibrators, review policies and CRF
+python -m clinical_ade.train
+
+# Download a pinned biomedical encoder, then train/evaluate its classifier
+python -m clinical_ade.download_model
+python -m clinical_ade.biomed
+
+pytest -q
 ```
 
-Open **http://127.0.0.1:8765**. You can also open `dashboard/index.html` directly: the dataset is bundled in `results.js`. There is no upload form or external inference service in the dashboard.
+The encoder download is about 440 MB. Training and the embedding pass were actually executed locally on CPU; this is not a GPU-training claim. `requirements.txt` records the tested direct package versions; `reports/metrics.json` records the measured environment. Hardware and transitive dependency differences can change runtimes and small numerical results. The embedding cache is keyed by prepared data hash, encoder revision and truncation length.
 
-The baseline command regenerates and replaces the current dashboard and metrics with baseline-only results. Preserve committed LLM results before rerunning if you want to compare them later.
+Rerunning `clinical_ade.train` produces a baseline-only bundle; rerun `clinical_ade.biomed` afterwards to include and potentially select the biomedical model. Test reports are regenerated; preserve the committed report if comparing experiments.
 
-## What the project demonstrates
+## Run the service and reviewer workbench
 
-| Skill | Implementation |
+Choose your own local secret and export it without committing it:
+
+```bash
+export ADE_API_TOKEN='replace-with-your-local-secret'
+uvicorn clinical_ade.api:app --host 127.0.0.1 --port 8000 --workers 1
+```
+
+Open **http://127.0.0.1:8000**, enter the token, and connect. The workbench can:
+
+- Analyze literature text using the selected trained model, showing exact sentence/mention offsets.
+- Preserve evidence sentences as an extractive summary of review candidates.
+- Inspect held-out real sentences with PubMed source links and model errors.
+- Compare measured models, review workload and document-cluster confidence intervals.
+- Save relevant/not-relevant/uncertain judgments to SQLite, keyed by document hash and model version.
+
+Submitted source documents are not stored by the analysis endpoint. Explicit reviewer decisions and rationales are stored locally. Tokens remain in the current page's input; they are not written to browser storage. No external model API receives the submitted text.
+
+| Endpoint | Purpose |
 |---|---|
-| Unstructured data processing | Character offsets, aliases, canonical concepts, assertion categories |
-| Clinical NLP | Conditions, medications, procedures, follow-up instructions |
-| Generative AI integration | Local Ollama structured-output extraction with post-validation |
-| Statistical analysis | Exact-match precision/recall/F1, seeded note bootstrap, paired system differences |
-| Exploration and communication | Interactive performance bars, age slices, source highlighting, error explorer, JSON export |
-| Responsible development | Data card, model card, risk register, intended-use limits, provenance and CI |
+| `POST /v1/analyze` | Inference on up to 20,000 characters / 200 heuristic sentences |
+| `GET /v1/evaluation` | Paginated held-out cases from the local evaluated run |
+| `GET /v1/report` | Aggregate model/evaluation report |
+| `POST /v1/reviews` | Persist a reviewer annotation |
+| `GET /health/live` | Process liveness |
+| `GET /health/ready` | Loaded model readiness; returns 503 for invalid/missing artifacts |
+| `GET /metrics` | Request/error/latency counters without source text |
 
-There is **no supervised classifier or fine-tuning** in this version. The LLM is pretrained; dictionaries and context rules are manually authored. Summaries are **extractive source sentences**, including when the LLM supplies the entities. An abstractive LLM summarizer is not implemented or scored.
+All `/v1/*` routes and `/metrics` require `Authorization: Bearer <token>`. FastAPI request schemas are available at `/docs`. Artifact hashes are verified before deserializing trusted local bundles; hashes detect corruption and do not make arbitrary pickle files safe.
 
-## Architecture
+## Data quality and evaluation design
 
-```mermaid
-flowchart LR
-    A[Synthetic text + independent labels] --> B[Dictionary NLP]
-    A --> C[Context-aware NLP]
-    A --> D[Optional local Llama via Ollama]
-    D --> E[Schema + quote validation]
-    B --> F[Exact entity evaluation]
-    C --> F
-    E --> F
-    F --> G[Metrics + bootstrap intervals]
-    B --> H[Verbatim evidence cards]
-    C --> H
-    E --> H
-    G --> I[Static dashboard + error explorer]
-    H --> I
-```
+The Hugging Face ADE corpus has 23,516 rows, including duplicate sentence rows for multiple drug–effect relations. We remove **2,621 duplicate normalized rows**. The Hugging Face classification table omits document IDs, so a pinned source distribution recovers PubMed IDs through exact normalized-text matching; **all retained sentences map to source documents**.
 
-## Run a real local LLM comparison
+A sentence appearing in multiple documents connects their PubMed IDs into the same split group. Stratified group folds allocate roughly 50% to training, 10% to tuning, 10% to calibration, 10% to review-policy selection, and 20% to testing. Every source document and normalized sentence is confined to one split. Published results with different splits are not directly comparable.
 
-Install [Ollama](https://ollama.com/) and run a model locally. Review the model's license and hardware needs before downloading it.
+Exact source matching aligns drug/effect spans. Ambiguous repeated mentions and overlapping BIO spans are documented rather than silently treated as reliable labels. [The data card](docs/DATA_CARD.md) explains what the annotations do and do not cover.
 
-```bash
-ollama pull llama3.1
-python -m clinical_intelligence.pipeline --ollama-model llama3.1:latest
-```
-
-The adapter uses the [documented structured-output API](https://docs.ollama.com/capabilities/structured-outputs) at `127.0.0.1:11434`. It evaluates a **fixed, seed-42 sample of 15 test notes plus all 16 challenge notes**, selected before inspecting predictions. Both baselines run on all 166 notes. `llm_comparison.baseline_on_same_subset` provides matched baseline results: do not compare differently sized test cohorts without this field.
-
-Temperature and sampling seed are fixed; identical output is not guaranteed across hardware or Ollama/model versions. No paid API is used. Local compute costs are unmeasured. Failed requests stop the run; the code does not silently substitute rules or invent LLM results. Only synthetic text is sent to the local endpoint.
-
-## Baseline findings
-
-| System | Template test (75 notes) | Challenge set (16 notes) |
-|---|---:|---:|
-| Dictionary | 0.550 micro F1 | 0.333 micro F1 |
-| Context-aware rules | 1.000 micro F1 | 0.762 micro F1 |
-
-The perfect template score reflects a narrow, controlled vocabulary and simple templates. The challenge set exposes post-mention negation, uncertainty, history, and family-experiencer failures. These are engineering regression checks, **not evidence of clinical performance**. All exact scores, counts, bootstrap intervals, latency, LLM coverage, and matched-subset comparisons are in [`reports/metrics.json`](reports/metrics.json).
-
-## Measured LLM experiment
-
-Llama 3.1 8B Q4_K_M was executed locally on the fixed 31-note subset. Initially, it often supplied sentence-level quotes while the validator required mention-only quotes. Strict-v1 validation produced F1 **0.0328 on 15 test notes** and **0.1667 on 16 challenge notes**. This was primarily a span-alignment integration failure, not a measured rate of medical hallucination.
-
-A deterministic normalizer now aligns a known canonical alias within an exact unique source quote and derives follow-up text directly from its quoted instruction. Replaying the **same saved outputs**, without additional model calls, yielded F1 **0.9244 (15 test notes)** and **0.8095 (16 challenge notes)**. The contextual baseline on those exact subsets scored **1.0000** and **0.7619**, respectively. These are **exploratory post-hoc results**; the adapter was improved after inspecting the outputs, so a new independent holdout is needed.
-
-The raw field values, original strict metrics, environment and model digest are retained in `reports/llm_raw.json` and `reports/llm_environment.json`. To restore/reproduce the committed replay after running the baseline command:
-
-```bash
-python -m clinical_intelligence.replay
-```
-
-The replay reuses original inference latency and explicitly excludes offline normalization time. A fresh `--ollama-model` run uses the updated normalizer and measures its full request/validation path. See [the experiment note](docs/LLM_EXPERIMENT.md).
-
-## Explore the dashboard
-
-Select a system and split; inspect entity-level precision, recall, and F1. Filter to documents with errors, search for a concept, and inspect highlighted evidence, assertion labels, offsets, and unmatched gold/predicted entities. Download metrics as JSON. Synthetic age groups are included to demonstrate slice analysis, not real demographic fairness.
-
-## Repository map
+## Repository structure
 
 ```text
-clinical_intelligence/    corpus generation, NLP, LLM adapter, evaluation, CLI
- data/                   synthetic JSONL and SHA-256 manifest
- dashboard/              responsive static UI and generated results
- reports/                measured metrics and run evidence
- docs/                   methodology, data/model cards, responsible AI, interview guide
- tests/                  unit, protocol, and end-to-end regression tests
- .github/workflows/      Python 3.11/3.13 CI
+src/clinical_ade/   ingestion, ML training, calibration, CRF, inference and API
+reports/           measured aggregate results, dataset and artifact manifests
+web/               operational review workbench, backed by the inference API
+tests/             unit, API, real-data lineage and trained-bundle integration checks
+docs/              research, methodology, model card, operations, governance
+runtime/           ignored downloaded data, embeddings, models and review DB
+Dockerfile         non-root service image; mounted local artifacts
 ```
 
-## Further development
+[Research and design](docs/RESEARCH.md) · [Evaluation methodology](docs/METHODOLOGY.md) · [Model card](docs/MODEL_CARD.md) · [Operations](docs/OPERATIONS.md) · [Responsible AI](docs/RESPONSIBLE_AI.md)
 
-Move to an appropriately licensed, independently annotated corpus; freeze patient-level splits; compare a trained assertion classifier or clinical transformer against rules and the LLM; obtain clinician adjudication; measure semantic summarization correctness and omissions. The current corpus is too small and repetitive to justify training a clinical model or claiming generalization.
+## Data/model rights
 
-See [data provenance and external dataset options](docs/DATA_CARD.md), [methodology](docs/METHODOLOGY.md), [model card](docs/MODEL_CARD.md), [responsible AI](docs/RESPONSIBLE_AI.md), and [interview walkthrough](docs/INTERVIEW_GUIDE.md).
+The ADE Hugging Face card lists the dataset license as **unknown**. This repository distributes code, aggregate measurements and provenance hashes, **not the case-report text or trained ADE artifacts**. Downloaded data retain their source terms. Do not infer commercial data rights from public accessibility. The pretrained BiomedBERT model has its own MIT model license; the repository's [MIT license](LICENSE) applies to project code only.
 
-## License
-
-Project code and the project's original synthetic fixtures: MIT, as stated in [LICENSE](LICENSE). Third-party model and dataset licenses remain separate. No external clinical dataset is redistributed.
+Dataset: [ADE corpus on Hugging Face](https://huggingface.co/datasets/ade-benchmark-corpus/ade_corpus_v2). Research: [Gurulingappa et al., 2012](https://pmc.ncbi.nlm.nih.gov/articles/PMC3599676/). Biomedical encoder: [Microsoft BiomedBERT](https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext).

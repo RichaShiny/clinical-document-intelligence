@@ -1,31 +1,27 @@
-# Evaluation methodology
+# Evaluation protocol
 
-## Systems and hypotheses
+## Splits and model fitting
 
-The dictionary system finds bounded case-insensitive alias matches and labels them present (follow-up instructions are always planned). The contextual system uses exactly the same extraction vocabulary, then applies prefix rules for family, negation, uncertainty, history and planning. Clause boundaries reset context at semicolons, “but” and “however.” The hypothesis is that assertion handling improves exact entity correctness without changing detection vocabulary.
+The seed-42 split uses stratified, connected-document-group folds: folds 0–4 train, 5 tune, 6 calibration, 7 review-policy selection, and 8–9 test. All normalized sentences and all source PMIDs stay in one split. It is not a chronological or prospective split. The feature vocabulary, IDF, neural vocabulary, lexical CRF features, and feature scaler fit only training data.
 
-The optional LLM system uses a JSON schema and a fixed clinical-extraction prompt. It receives no gold labels. Evidence must be an exact unique source quote, its type and status must be valid, and its canonical value must match exactly one bounded supported alias inside that quote. The normalizer aligns the entity span within sentence-level quotes. Follow-up values are derived from a quoted follow-up instruction, with a final period removed. Invalid entities are rejected and retained in per-note audit output. Envelope or transport errors fail the run. Duplicate evidence quotes are rejected rather than ambiguously located. This conservative policy may reduce recall; rejection is not proof the underlying model hallucinated.
+TF-IDF C values (.25, 1, 4) are chosen by tune AUPRC. The PyTorch model trains for 20 epochs with AdamW, seed 42, batch 128; its checkpoint is chosen by tune AUPRC. BiomedBERT's frozen representation uses attention-masked mean pooling, max 128 subword tokens, and a standardized logistic head (C .01, .1, 1, chosen on tune). The encoder revision is pinned. No fine-tuning or GPU run is claimed.
 
-## Endpoints
+The CRF compares all training sentences against a train-only balanced sample. Its sampling policy is selected by tune exact span F1. Training-derived drug/effect token membership is a feature, not a test-derived dictionary. Single BIO decoding cannot represent all nested spans. Relation-level causality is not evaluated.
 
-Primary entity correctness is exact `(kind, canonical value, assertion, start, end)`. True positives are set intersections; unmatched predictions and gold entities are false positives and false negatives. A wrong assertion creates one false positive and one false negative. Duplicate identical predictions do not earn additional credit. Micro precision = TP/(TP+FP); recall = TP/(TP+FN); F1 = 2TP/(2TP+FP+FN). Empty denominators return zero, explicitly; do not interpret an empty category as perfect performance.
+Each model's probabilities receive logistic sigmoid calibration on the calibration split. The largest threshold achieving at least 90% empirical recall on the separate policy split is selected. The server's default model is the candidate with the highest tuning AUPRC. Test labels do not enter these fitting or selection functions. Aggregate test results were inspected during engineering development, including span-extractor feature development; this is a development benchmark, not a preregistered one-shot test or independent external validation.
 
-Summary cards reproduce source sentences that contain extracted mentions. Their offsets can be mechanically checked, but clinical completeness, salience and assertion correctness remain unvalidated. There are no ROUGE or hallucination-rate claims for an unimplemented abstractive summarizer. The committed LLM results are a post-hoc replay of saved model responses with normalization v2; original strict-v1 metrics are preserved. Original request latency excludes offline replay time. Quote rejection count is reported separately from semantic error metrics.
+## Reported outcomes
 
-## Statistical analysis
+Primary ranking measure: average precision (AUPRC implementation in scikit-learn). Secondary measures: AUROC, threshold precision/recall/F1, review fraction, Brier score and 10-bin expected calibration error. The confusion matrix has rows true [negative, positive] and columns predicted [negative, positive]. Review fraction measures sentences flagged in this corpus; it is not a measured time saving or patient benefit.
 
-We resample notes 500 times with replacement using seed 42, recompute micro F1, and report empirical 2.5%/97.5% bounds. Paired differences resample the same note indices across systems. They describe variation within this constructed corpus. Template reuse and the small challenge set weaken independence and external validity. A collapsed interval at F1=1 reflects a trivial benchmark, not certainty about future clinical performance.
+A no-skill average-precision reference is the positive prevalence. Review threshold targets do not guarantee held-out recall. In the measured biomedical model, test recall falls below the 90% policy target; the report preserves that failure. A clinical release would need its own prespecified acceptance thresholds and independent validation.
 
-LLM evaluation covers 15 test notes selected by `random.Random(42).sample` and all 16 challenge notes. Matched contextual baseline metrics are included under `llm_comparison`; the main baseline test uses 75 notes. Do not compare these two test populations as if identical. No LLM development scores are fabricated.
+We bootstrap connected document groups 300 times with seed 42, retaining all sentences for each sampled group, and report empirical 95% intervals for AUPRC, recall and review fraction. This respects within-paper dependence better than row bootstrap but does not capture population shift or annotation uncertainty. Short/long text slices are operational stress checks, not demographic fairness analysis. Reliable protected-attribute metadata are unavailable.
 
-Latency is wall-clock sequential time per note, including post-processing and first-call model loading. Median and empirical p95 are measured over each system's evaluated notes. Hardware and cold-start effects matter. Tokens are Ollama-reported counts; API fees are zero for local inference, while compute cost is unknown.
+Entity metrics match exact type/start/end sets. Ungated CRF scores isolate extraction quality. Gated metrics measure the combined selected triage model and extractor; missed triage sentences therefore reduce extraction recall. Citation offsets are mechanically verifiable, but a correct source quote does not prove the medical assertion.
 
-## Product decisions
+## Reproducibility and limits
 
-1. Preserve assertions in structured output: a disease mention is not automatically a current patient diagnosis.
-2. Make source evidence inspectable and keep human review in the workflow.
-3. Use rules as a transparent baseline and cost reference; model complexity needs demonstrated gains on matched data.
-4. Treat challenge failures as development leads, then evaluate changes on a new frozen holdout. Do not tune against this challenge set and reuse its score as an untouched test result.
-5. Expand terminology and annotation coverage before deployment claims. Medication dosage, relations, temporal reasoning, labs, coreference and clinical coding are out of scope.
+Hashes cover raw source files and prepared rows. A pinned encoder revision and input hash identify cached embeddings. Saved raw data and per-sentence predictions remain local. The artifact manifest records model and encoder file digests; model code and reports are committed.
 
-A larger study should use independent annotators with clinician adjudication, patient-level splits, confidence intervals clustered by patient/document, repeated model runs, and expert review of harmful omissions and unsupported assertions.
+There are no synthetic augmentation records, inferred demographic labels, fabricated outcomes, or LLM-generated gold annotations. Remaining limits include selected case-report bias, approximate sentence segmentation, 128-token encoder truncation, sparse/nested entity annotation, near-duplicate paraphrases, potential pretrained-corpus overlap, and lack of an independent contemporary corpus.

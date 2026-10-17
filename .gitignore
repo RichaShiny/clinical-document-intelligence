@@ -1,10 +1,8 @@
+.venv/
+runtime/
 __pycache__/
 *.py[cod]
-.venv/
 *.egg-info/
+.pytest_cache/
 .env
 .DS_Store
-.coverage
-.pytest_cache/
-data/private/
-reports/private/

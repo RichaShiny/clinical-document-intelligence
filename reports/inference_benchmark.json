@@ -1,0 +1,10 @@
+{
+  "scope": "Local HTTP end-to-end on 20 real test sentences after 3 warm-up requests; includes segmentation, classifier, gated CRF and JSON.",
+  "model": "biomedbert_frozen",
+  "model_version": "953fe9c717fc98b3",
+  "n": 20,
+  "median_ms": 24.94837500853464,
+  "p95_ms": 46.24641704140231,
+  "hardware": "CPU; four PyTorch threads",
+  "cold_start_included": false
+}
