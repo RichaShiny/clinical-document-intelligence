@@ -16,6 +16,7 @@ dev = ["pytest>=8"]
 ade-prepare = "clinical_ade.data:main"
 ade-train = "clinical_ade.train:main"
 ade-transformer = "clinical_ade.biomed:main"
+ade-train-entities = "clinical_ade.token_entities:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

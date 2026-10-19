@@ -2,7 +2,7 @@
 
 ## Supported local workflow
 
-Run preparation, training, encoder download and the biomedical experiment from the README before starting the API. `runtime/artifacts/manifest.json` records the chosen model. The service verifies its trusted artifact hashes and, when needed, encoder hashes before loading. Missing/corrupt artifacts yield readiness 503. Never deserialize arbitrary user-supplied joblib/pickle models. Matching hashes are not an authenticity signature.
+Run preparation, training, encoder download and the biomedical experiment from the README before starting the API. `runtime/artifacts/manifest.json` records the chosen model. The selected entity extractor is recorded separately from the sentence classifier. Legacy bundles default to CRF; promoted biomedical token bundles also require their registered delta checkpoint. The service verifies its trusted artifact hashes and, when needed, encoder hashes before loading. Missing/corrupt artifacts yield readiness 503. Never deserialize arbitrary user-supplied joblib/pickle models. Matching hashes are not an authenticity signature.
 
 `ADE_API_TOKEN` is required at startup. Source text is processed in memory; access logs and operational counters do not include request bodies. Reviewer rationales are explicitly persisted and may themselves be sensitive, so protect the review store. The service does not implement deletion/retention automation. `ADE_REVIEW_DB` optionally relocates the SQLite file.
 

@@ -15,7 +15,7 @@ The [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) provide
 | Inflated results from duplicate sentences/documents | Source PMID recovery, deduplication, connected-document grouping and tests | Near-paraphrase and pretrained-corpus overlap remain |
 | Missed safety evidence | Policy-target recall, held-out recall and clustered intervals | Test recall can miss target; independent acceptance study required |
 | False alarms/reviewer burden | Measured precision and review fraction | No prospective reviewer time/utility study |
-| Incorrect drug/effect spans | Separate exact-span evaluation and source offsets | CRF quality is limited; expert verification required |
+| Incorrect drug/effect spans | Separate exact-span evaluation and source offsets | Entity extraction remains error-prone; expert verification required |
 | False causality | No automatic relation/causality assertion | Users can still overinterpret contextual co-occurrence |
 | Unauthorized data use | No raw data/derived case records in Git; pinned download instructions | HF dataset license is unknown; commercial rights not established |
 | Data exposure | Bearer authentication, loopback example, bounded requests, no source-body logging | No enterprise identity, encryption-at-rest program or multi-tenant authorization |

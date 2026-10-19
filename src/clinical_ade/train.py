@@ -133,9 +133,9 @@ def train(root):
 
 def finalize_artifacts(root,report):
     artifacts=root/'runtime/artifacts'
-    manifest=dict(selected_model=report['selected_model'],dataset_sha256=digest_file(root/'runtime/prepared.json'),
+    manifest=dict(selected_model=report['selected_model'],selected_extractor=report.get('selected_extractor','crf'),dataset_sha256=digest_file(root/'runtime/prepared.json'),
         files={f.name:digest_file(f) for f in artifacts.iterdir() if f.is_file() and f.name!='manifest.json'},
-        encoder_files={f.name:digest_file(f) for f in (root/'runtime/biomedbert').glob('*') if f.is_file()} if report['selected_model']=='biomedbert_frozen' else {},
+        encoder_files={f.name:digest_file(f) for f in (root/'runtime/biomedbert').glob('*') if f.is_file()} if report['selected_model']=='biomedbert_frozen' or report.get('selected_extractor')=='biomedbert_token' else {},
         note='Load only locally generated trusted model artifacts. Digests detect corruption, not malicious replacement of both manifest and files.')
     write_json(artifacts/'manifest.json',manifest)
     write_json(root/'reports/artifact_manifest.json',manifest)

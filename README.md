@@ -18,7 +18,7 @@ This is production-oriented research software with an authenticated inference se
 | pytorch_dan | 0.581 | 89.4% | 33.1% | 55.3% |
 | biomedbert_frozen | 0.824 | 87.6% | 62.0% | 28.9% |
 
-Selected by tuning AUPRC: **biomedbert_frozen**. Ungated CRF exact span micro F1: **0.387**; gated end-to-end span micro F1: **0.448**.
+Selected sentence classifier by tuning AUPRC: **biomedbert_frozen**. Baseline CRF exact span micro F1: **0.387**; partially fine-tuned biomedical tagger: **0.581**; tagger with sentence gating: **0.626**. Selected entity extractor: **biomedbert_token**.
 
 <!-- RESULTS_END -->
 
@@ -31,8 +31,11 @@ Model selection uses tuning-set AUPRC. Probability calibration and the review th
 | Lexical baseline | Word/character TF-IDF + logistic regression | scikit-learn | Vocabulary, IDF and classifier coefficients |
 | Neural baseline | Deep Averaging Network: 96-dim embeddings → 64-unit MLP | PyTorch | Word embeddings and network weights, from scratch |
 | Biomedical comparator and serving candidate | BiomedBERT masked-mean embeddings + logistic head | Hugging Face Transformers, PyTorch, scikit-learn | Classifier and scaling; **encoder is frozen, not fine-tuned** |
-| Structured evidence | BIO conditional random field with contextual and train-only lexical features | sklearn-crfsuite / CRFsuite | Sequence labeling weights for ADE-associated DRUG/EFFECT spans |
-| Serving | Calibrated selected classifier + gated CRF | FastAPI / Pydantic / Uvicorn | No online learning |
+| Entity baseline | BIO conditional random field with contextual and train-only lexical features | sklearn-crfsuite / CRFsuite | Sequence labeling weights for ADE-associated DRUG/EFFECT spans |
+| Biomedical entities | BiomedBERT BIO token classifier | Hugging Face Transformers / PyTorch | Last two encoder blocks and tagging head, selected on tuning span F1 |
+| Serving | Calibrated sentence classifier + gated selected extractor | FastAPI / Pydantic / Uvicorn | No online learning |
+
+An optional biomedical BIO tagger partially fine-tunes the last two encoder blocks and head, and replaces the CRF only if tuning span F1 improves. See [the entity-extraction experiment](docs/ENTITY_EXTRACTION.md).
 
 No Ollama dependency, no fabricated benchmark scores, no synthetic training dataset. Unit-test fixtures are small artificial inputs used only to verify software behavior.
 
@@ -57,6 +60,9 @@ python -m clinical_ade.train
 # Download a pinned biomedical encoder, then train/evaluate its classifier
 python -m clinical_ade.download_model
 python -m clinical_ade.biomed
+
+# Optional entity-extraction extension: partially fine-tune the biomedical BIO tagger
+python -m clinical_ade.token_entities --epochs 3
 
 pytest -q
 ```
