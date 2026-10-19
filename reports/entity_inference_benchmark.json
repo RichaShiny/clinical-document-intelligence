@@ -1,0 +1,18 @@
+{
+  "protocol": "Same 20 real test sentences after 3 warmups; in-process FastAPI ASGI requests. No network transport or startup. CPU / four PyTorch threads.",
+  "models": {
+    "crf": {
+      "n": 20,
+      "median_ms": 23.27991698984988,
+      "p95_ms": 44.44479197263718,
+      "model_version": "53b57cc08873d41c"
+    },
+    "biomedbert_token": {
+      "n": 20,
+      "median_ms": 31.20752051472664,
+      "p95_ms": 75.78404201194644,
+      "model_version": "f7199ca92ac80deb"
+    }
+  },
+  "limitations": "Small local latency sample, not a load test. Most sentences may bypass extraction at the fixed triage threshold."
+}

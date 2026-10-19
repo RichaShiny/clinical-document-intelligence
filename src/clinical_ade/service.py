@@ -29,7 +29,18 @@ class Engine:
             if Path(name).name!=name or digest_file(self.root/'runtime/biomedbert'/name)!=digest:
                 raise ValueError('Encoder artifact integrity check failed')
         self.name=self.manifest['selected_model'];self.version=digest_file(directory/'manifest.json')[:16]
-        self.crf=joblib.load(directory/'entities_crf.joblib')
+        self.extractor_name=self.manifest.get('selected_extractor','crf')
+        if self.extractor_name=='biomedbert_token':
+            from .token_entities import TokenExtractor
+            if 'entities_biomedbert_delta.pt' not in self.manifest['files']:
+                raise ValueError('Biomedical entity checkpoint is not registered')
+            required_encoder={'config.json','tokenizer_config.json','vocab.txt','pytorch_model.bin'}
+            if not required_encoder.issubset(self.manifest.get('encoder_files',{})):
+                raise ValueError('Biomedical entity encoder files are not registered')
+            self.entity_model=TokenExtractor(self.root)
+        elif self.extractor_name=='crf':
+            self.crf=joblib.load(directory/'entities_crf.joblib')
+        else:raise ValueError('Unsupported entity extractor')
         if self.name=='tfidf_logistic':
             bundle=joblib.load(directory/'tfidf_logistic.joblib');self.model=bundle['model']
         elif self.name=='pytorch_dan':
@@ -66,13 +77,19 @@ class Engine:
                     embeddings.append(((hidden*mask).sum(1)/mask.sum(1)).numpy())
             raw=self.model.predict_proba(self.scaler.transform(np.concatenate(embeddings)))[:,1]
         probabilities=calibrated(self.cal,raw);out=[]
-        for (left,right,sentence),probability in zip(spans,probabilities):
-            extracted=entities.predict(self.crf,sentence) if probability>=self.threshold else []
+        candidates=[i for i,p in enumerate(probabilities) if p>=self.threshold]
+        if self.extractor_name=='biomedbert_token':
+            extracted_batch=self.entity_model.predict_batch([texts[i] for i in candidates])
+        else:
+            extracted_batch=[entities.predict(self.crf,texts[i]) for i in candidates]
+        extracted_by_index=dict(zip(candidates,extracted_batch))
+        for i,((left,right,sentence),probability) in enumerate(zip(spans,probabilities)):
+            extracted=extracted_by_index.get(i,[])
             output=[dict(kind=e['kind'],text=e['text'],start=e['start']+left,end=e['end']+left) for e in extracted]
             out.append(dict(text=sentence,start=left,end=right,ade_probability=float(probability),
                 action='review' if probability>=self.threshold else 'lower_priority',entities=output))
         review=[r for r in out if r['action']=='review']
         return dict(document_sha256=hashlib.sha256(text.encode()).hexdigest(),model=self.name,model_version=self.version,
-            threshold=float(self.threshold),sentences=out,evidence_summary=[dict(text=r['text'],start=r['start'],end=r['end']) for r in review],
+            entity_extractor=self.extractor_name,threshold=float(self.threshold),sentences=out,evidence_summary=[dict(text=r['text'],start=r['start'],end=r['end']) for r in review],
             latency_ms=(time.perf_counter()-start)*1000,
             intended_use='Literature safety-review prioritization; no patient-specific recommendation or causal determination.')

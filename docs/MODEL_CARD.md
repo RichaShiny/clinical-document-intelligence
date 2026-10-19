@@ -6,9 +6,9 @@
 
 ## Training and inference
 
-The dataset, five-way group split, measured model parameters and scores are documented in the README and reports. The default candidate is selected by tune AUPRC. BiomedBERT is a frozen biomedical text encoder with a learned standardized logistic head; the encoder itself was not trained or fine-tuned here. Other trained components include lexical logistic regression, a scratch PyTorch Deep Averaging Network, calibrators and a CRF.
+The dataset, five-way group split, measured model parameters and scores are documented in the README and reports. The default candidate is selected by tune AUPRC. For sentence classification, BiomedBERT is a frozen biomedical text encoder with a learned standardized logistic head; the encoder itself was not trained or fine-tuned here. Other trained components include lexical logistic regression, a scratch PyTorch Deep Averaging Network, calibrators, a CRF, and an optional biomedical token classifier. The token classifier partially fine-tunes the final two encoder blocks and BIO head; its encoder weights are separate from the frozen sentence-classification encoder.
 
-The API groups submitted text into heuristic sentences, estimates an ADE-related probability, applies the learned review threshold and runs the CRF on flagged sentences. Entities and summary evidence remain verbatim source spans. Output is reviewable evidence, not a generated clinical assessment. A “lower priority” sentence is not declared safe or ADE-free.
+The API groups submitted text into heuristic sentences, estimates an ADE-related probability, applies the learned review threshold and runs the selected entity extractor on flagged sentences. Entities and summary evidence remain verbatim source spans. Output is reviewable evidence, not a generated clinical assessment. A “lower priority” sentence is not declared safe or ADE-free.
 
 ## Actual limitations
 

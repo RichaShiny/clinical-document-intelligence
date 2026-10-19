@@ -4,7 +4,7 @@
 
 The seed-42 split uses stratified, connected-document-group folds: folds 0–4 train, 5 tune, 6 calibration, 7 review-policy selection, and 8–9 test. All normalized sentences and all source PMIDs stay in one split. It is not a chronological or prospective split. The feature vocabulary, IDF, neural vocabulary, lexical CRF features, and feature scaler fit only training data.
 
-TF-IDF C values (.25, 1, 4) are chosen by tune AUPRC. The PyTorch model trains for 20 epochs with AdamW, seed 42, batch 128; its checkpoint is chosen by tune AUPRC. BiomedBERT's frozen representation uses attention-masked mean pooling, max 128 subword tokens, and a standardized logistic head (C .01, .1, 1, chosen on tune). The encoder revision is pinned. No fine-tuning or GPU run is claimed.
+TF-IDF C values (.25, 1, 4) are chosen by tune AUPRC. The PyTorch model trains for 20 epochs with AdamW, seed 42, batch 128; its checkpoint is chosen by tune AUPRC. BiomedBERT's frozen representation uses attention-masked mean pooling, max 128 subword tokens, and a standardized logistic head (C .01, .1, 1, chosen on tune). The encoder revision is pinned. No sentence-encoder fine-tuning or GPU run is claimed. The [entity extension](ENTITY_EXTRACTION.md) separately fine-tunes the last two encoder blocks and a BIO tagging head on CPU.
 
 The CRF compares all training sentences against a train-only balanced sample. Its sampling policy is selected by tune exact span F1. Training-derived drug/effect token membership is a feature, not a test-derived dictionary. Single BIO decoding cannot represent all nested spans. Relation-level causality is not evaluated.
 
@@ -18,7 +18,7 @@ A no-skill average-precision reference is the positive prevalence. Review thresh
 
 We bootstrap connected document groups 300 times with seed 42, retaining all sentences for each sampled group, and report empirical 95% intervals for AUPRC, recall and review fraction. This respects within-paper dependence better than row bootstrap but does not capture population shift or annotation uncertainty. Short/long text slices are operational stress checks, not demographic fairness analysis. Reliable protected-attribute metadata are unavailable.
 
-Entity metrics match exact type/start/end sets. Ungated CRF scores isolate extraction quality. Gated metrics measure the combined selected triage model and extractor; missed triage sentences therefore reduce extraction recall. Citation offsets are mechanically verifiable, but a correct source quote does not prove the medical assertion.
+Entity metrics match exact type/start/end sets. Ungated extractor scores isolate extraction quality. Gated metrics measure the combined selected triage model and extractor; missed triage sentences therefore reduce extraction recall. Citation offsets are mechanically verifiable, but a correct source quote does not prove the medical assertion.
 
 ## Reproducibility and limits
 

@@ -1,0 +1,229 @@
+{
+  "model": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
+  "revision": "e1354b7a3a09615f6aba48dfad4b7a613eef7062",
+  "seed": 42,
+  "epochs": 3,
+  "best_epoch": 2,
+  "trainable_encoder_blocks": [
+    10,
+    11
+  ],
+  "frozen_encoder_blocks": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "trainable_parameters": 14179589,
+  "max_length": 128,
+  "train_sentences": 6408,
+  "train_ignored_entities": 41,
+  "class_weights": [
+    1.0,
+    7.649800831236635,
+    6.340254352703449,
+    7.011817815692288,
+    5.075215222988454
+  ],
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 0.36255064966189593,
+      "tune": {
+        "tp": 827,
+        "fp": 2123,
+        "fn": 198,
+        "precision": 0.2803389830508475,
+        "recall": 0.806829268292683,
+        "micro_f1": 0.4161006289308176,
+        "by_kind": {
+          "DRUG": {
+            "tp": 419,
+            "fp": 959,
+            "fn": 48,
+            "f1": 0.45420054200542004
+          },
+          "EFFECT": {
+            "tp": 408,
+            "fp": 1164,
+            "fn": 150,
+            "f1": 0.38309859154929576
+          }
+        },
+        "scope": "Exact ADE-associated type/start/end spans; all supplied sentences."
+      }
+    },
+    {
+      "epoch": 2,
+      "loss": 0.18445020450506722,
+      "tune": {
+        "tp": 832,
+        "fp": 1025,
+        "fn": 193,
+        "precision": 0.44803446418955306,
+        "recall": 0.8117073170731708,
+        "micro_f1": 0.5773768216516308,
+        "by_kind": {
+          "DRUG": {
+            "tp": 426,
+            "fp": 546,
+            "fn": 41,
+            "f1": 0.592077831827658
+          },
+          "EFFECT": {
+            "tp": 406,
+            "fp": 479,
+            "fn": 152,
+            "f1": 0.5627165627165627
+          }
+        },
+        "scope": "Exact ADE-associated type/start/end spans; all supplied sentences."
+      }
+    },
+    {
+      "epoch": 3,
+      "loss": 0.14425255482705157,
+      "tune": {
+        "tp": 827,
+        "fp": 1016,
+        "fn": 198,
+        "precision": 0.44872490504612045,
+        "recall": 0.806829268292683,
+        "micro_f1": 0.5767085076708508,
+        "by_kind": {
+          "DRUG": {
+            "tp": 421,
+            "fp": 433,
+            "fn": 46,
+            "f1": 0.6373959121877366
+          },
+          "EFFECT": {
+            "tp": 406,
+            "fp": 583,
+            "fn": 152,
+            "f1": 0.5248868778280543
+          }
+        },
+        "scope": "Exact ADE-associated type/start/end spans; all supplied sentences."
+      }
+    }
+  ],
+  "training_and_evaluation_seconds": 469.64057533297455,
+  "data_sha256": "aaf05a075f33e3fe2975808a7758e3037836e0b49a14e5b27a9c6861da864127",
+  "crf_tune": {
+    "tp": 411,
+    "fp": 616,
+    "fn": 614,
+    "micro_f1": 0.40058479532163743,
+    "by_kind": {
+      "DRUG": {
+        "tp": 215,
+        "fp": 249,
+        "fn": 252,
+        "f1": 0.46186895810955964
+      },
+      "EFFECT": {
+        "tp": 196,
+        "fp": 367,
+        "fn": 362,
+        "f1": 0.3496877787689563
+      }
+    },
+    "scope": "Exact ADE-associated spans in all test sentences; relation causality and arbitrary drug mentions are not annotated exhaustively."
+  },
+  "candidate_tune_f1": 0.5773768216516308,
+  "crf_test": {
+    "tp": 811,
+    "fp": 1326,
+    "fn": 1248,
+    "micro_f1": 0.386558627264061,
+    "by_kind": {
+      "DRUG": {
+        "tp": 399,
+        "fp": 533,
+        "fn": 524,
+        "f1": 0.43018867924528303
+      },
+      "EFFECT": {
+        "tp": 412,
+        "fp": 793,
+        "fn": 724,
+        "f1": 0.35198633062793677
+      }
+    },
+    "scope": "Exact ADE-associated spans in all test sentences; relation causality and arbitrary drug mentions are not annotated exhaustively."
+  },
+  "candidate_test": {
+    "tp": 1685,
+    "fp": 2060,
+    "fn": 374,
+    "precision": 0.4499332443257677,
+    "recall": 0.8183584264205925,
+    "micro_f1": 0.5806340454858718,
+    "by_kind": {
+      "DRUG": {
+        "tp": 826,
+        "fp": 1042,
+        "fn": 97,
+        "f1": 0.5919025438910784
+      },
+      "EFFECT": {
+        "tp": 859,
+        "fp": 1018,
+        "fn": 277,
+        "f1": 0.5701958181214736
+      }
+    },
+    "scope": "Exact ADE-associated type/start/end spans; all supplied sentences."
+  },
+  "candidate_gated_test": {
+    "tp": 1546,
+    "fp": 1335,
+    "fn": 513,
+    "precision": 0.5366192294342242,
+    "recall": 0.7508499271491015,
+    "micro_f1": 0.625910931174089,
+    "by_kind": {
+      "DRUG": {
+        "tp": 751,
+        "fp": 567,
+        "fn": 172,
+        "f1": 0.6702365015618028
+      },
+      "EFFECT": {
+        "tp": 795,
+        "fp": 768,
+        "fn": 341,
+        "f1": 0.5891070766950722
+      }
+    },
+    "scope": "Exact ADE-associated type/start/end spans; all supplied sentences."
+  },
+  "selected_extractor": "biomedbert_token",
+  "selection_rule": "Promote only if tuning exact type/start/end micro F1 exceeds existing CRF; test not used for promotion.",
+  "limitation": "Existing development benchmark; not an untouched external clinical validation. Sparse, ambiguous and overlapping annotations remain.",
+  "paired_test_delta": {
+    "delta_f1": 0.19407541822181085,
+    "ci95": [
+      0.16435263138235642,
+      0.21708335153832395
+    ],
+    "samples": 300,
+    "unit": "Connected source-document groups; paired bootstrap; seed42"
+  },
+  "training_configuration": {
+    "batch_size": 16,
+    "encoder_learning_rate": 2e-05,
+    "head_learning_rate": 0.0005,
+    "weight_decay": 0.01,
+    "gradient_clip": 1.0,
+    "negative_to_positive_sentence_ratio": 2,
+    "optimizer": "AdamW"
+  }
+}

@@ -1256,6 +1256,107 @@
   },
   "deployment_status": "Local research API; not clinically validated or deployed to healthcare systems.",
   "entity_extraction": {
+    "tp": 1685,
+    "fp": 2060,
+    "fn": 374,
+    "precision": 0.4499332443257677,
+    "recall": 0.8183584264205925,
+    "micro_f1": 0.5806340454858718,
+    "by_kind": {
+      "DRUG": {
+        "tp": 826,
+        "fp": 1042,
+        "fn": 97,
+        "f1": 0.5919025438910784
+      },
+      "EFFECT": {
+        "tp": 859,
+        "fp": 1018,
+        "fn": 277,
+        "f1": 0.5701958181214736
+      }
+    },
+    "scope": "Exact ADE-associated type/start/end spans; all supplied sentences.",
+    "framework": "Hugging Face Transformers / PyTorch",
+    "encoder_finetuned_blocks": [
+      10,
+      11
+    ],
+    "selection_tune_f1": 0.5773768216516308
+  },
+  "selected_model": "biomedbert_frozen",
+  "offline_comparator": "biomedbert_frozen",
+  "gated_entity_extraction": {
+    "tp": 1546,
+    "fp": 1335,
+    "fn": 513,
+    "precision": 0.5366192294342242,
+    "recall": 0.7508499271491015,
+    "micro_f1": 0.625910931174089,
+    "by_kind": {
+      "DRUG": {
+        "tp": 751,
+        "fp": 567,
+        "fn": 172,
+        "f1": 0.6702365015618028
+      },
+      "EFFECT": {
+        "tp": 795,
+        "fp": 768,
+        "fn": 341,
+        "f1": 0.5891070766950722
+      }
+    },
+    "scope": "Exact ADE-associated type/start/end spans; all supplied sentences."
+  },
+  "entity_models": {
+    "crf": {
+      "tp": 811,
+      "fp": 1326,
+      "fn": 1248,
+      "micro_f1": 0.386558627264061,
+      "by_kind": {
+        "DRUG": {
+          "tp": 399,
+          "fp": 533,
+          "fn": 524,
+          "f1": 0.43018867924528303
+        },
+        "EFFECT": {
+          "tp": 412,
+          "fp": 793,
+          "fn": 724,
+          "f1": 0.35198633062793677
+        }
+      },
+      "scope": "Exact ADE-associated spans in all test sentences; relation causality and arbitrary drug mentions are not annotated exhaustively."
+    },
+    "biomedbert_token": {
+      "tp": 1685,
+      "fp": 2060,
+      "fn": 374,
+      "precision": 0.4499332443257677,
+      "recall": 0.8183584264205925,
+      "micro_f1": 0.5806340454858718,
+      "by_kind": {
+        "DRUG": {
+          "tp": 826,
+          "fp": 1042,
+          "fn": 97,
+          "f1": 0.5919025438910784
+        },
+        "EFFECT": {
+          "tp": 859,
+          "fp": 1018,
+          "fn": 277,
+          "f1": 0.5701958181214736
+        }
+      },
+      "scope": "Exact ADE-associated type/start/end spans; all supplied sentences."
+    }
+  },
+  "selected_extractor": "biomedbert_token",
+  "entity_baseline": {
     "tp": 811,
     "fp": 1326,
     "fn": 1248,
@@ -1293,28 +1394,5 @@
       }
     ],
     "lexicon": "Entity-token membership fitted on training annotations only"
-  },
-  "selected_model": "biomedbert_frozen",
-  "offline_comparator": "biomedbert_frozen",
-  "gated_entity_extraction": {
-    "tp": 742,
-    "fp": 508,
-    "fn": 1317,
-    "micro_f1": 0.44847385917195526,
-    "by_kind": {
-      "DRUG": {
-        "tp": 356,
-        "fp": 211,
-        "fn": 567,
-        "f1": 0.4778523489932886
-      },
-      "EFFECT": {
-        "tp": 386,
-        "fp": 297,
-        "fn": 750,
-        "f1": 0.4244090159428257
-      }
-    },
-    "scope": "Exact ADE-associated spans in all test sentences; relation causality and arbitrary drug mentions are not annotated exhaustively."
   }
 }

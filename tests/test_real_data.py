@@ -34,3 +34,18 @@ def test_trained_inference_matches_saved_test_probabilities():
         for s in result['sentences']:
             assert row['text'][s['start']:s['end']]==s['text']
             for e in s['entities']:assert row['text'][e['start']:e['end']]==e['text']
+
+
+def test_promoted_neural_entities_match_saved_predictions():
+    manifest=ROOT/'runtime/artifacts/manifest.json'
+    if not manifest.exists() or json.loads(manifest.read_text()).get('selected_extractor')!='biomedbert_token':
+        pytest.skip('Run token-extractor training and promotion for neural bundle integration')
+    engine=Engine(ROOT)
+    rows=json.loads((ROOT/'runtime/test_predictions.json').read_text())
+    chosen=[r for r in rows if r['predictions'][engine.name]>=engine.threshold
+            and len(list(sentences(r['text'])))==1][:3]
+    assert len(chosen)==3
+    for row in chosen:
+        out=engine.analyze(row['text'])
+        assert out['entity_extractor']=='biomedbert_token'
+        assert out['sentences'][0]['entities']==row['entities']
