@@ -32,3 +32,25 @@ The Docker daemon was unavailable during local development, so no successful loc
 To update a model, train into a separate directory, validate manifests and held-out results, run the API integration tests, then restart against the reviewed artifact bundle. Preserve the previous bundle to roll back. Do not swap files under a running service. No continuous learning occurs from reviewer decisions.
 
 Before shared/Internet deployment add managed identity and per-user authorization, TLS termination, rate/concurrency controls, audit ownership, encrypted storage, retention policy and organizational security review. SQLite and a single local bearer token are a local research setup, not multi-tenant production infrastructure. Production-oriented here refers to the implemented packaging/serving discipline, not clinical or operational certification.
+
+### Partial sentence coverage
+
+Biomedical sentence classification and token extraction each use a 128-token
+input limit, including special tokens. `/v1/analyze` now returns per-sentence
+`coverage.classification` and `coverage.entity_extraction` objects with
+`input_tokens`, `max_tokens`, and `truncated`. Counts use the corresponding
+model's tokenizer before truncation. A null stage means this bounded biomedical
+stage did not run (another backend, or extraction skipped by sentence gating).
+It does not certify full coverage for other backends.
+
+Per-sentence `warnings` lists `classification_truncated` and/or
+`entity_extraction_truncated` when applicable. The workbench displays these
+warnings beside the full source sentence. The returned score and spans still
+come from the original 128-token inference; warnings neither recalibrate the
+score nor recover omitted evidence. A lower-priority sentence can therefore
+carry a classification warning. Review the complete source manually when
+coverage is partial. Sentence and span offsets remain in the original input.
+
+Full token counting adds tokenization work but no additional encoder inference.
+This change does not implement sliding windows or establish that truncation
+caused the sentence-length differences in the error analysis.
