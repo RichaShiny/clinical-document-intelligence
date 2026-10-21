@@ -18,6 +18,13 @@ def sentences(text):
         if left<right:yield match.start()+left,match.start()+right,text[match.start()+left:match.start()+right]
 
 
+def token_coverage(tokenizer, texts, max_length=128):
+    """Count full encoded sequences, including special tokens, before truncation."""
+    encoded = tokenizer(texts, truncation=False, padding=False, verbose=False)
+    return [dict(input_tokens=len(ids), max_tokens=max_length,
+                 truncated=len(ids) > max_length) for ids in encoded['input_ids']]
+
+
 class Engine:
     def __init__(self,root):
         self.root=Path(root);directory=self.root/'runtime/artifacts'
@@ -77,16 +84,25 @@ class Engine:
                     embeddings.append(((hidden*mask).sum(1)/mask.sum(1)).numpy())
             raw=self.model.predict_proba(self.scaler.transform(np.concatenate(embeddings)))[:,1]
         probabilities=calibrated(self.cal,raw);out=[]
+        classification_coverage = (token_coverage(self.tokenizer, texts)
+                                   if self.name == 'biomedbert_frozen' else [None] * len(texts))
         candidates=[i for i,p in enumerate(probabilities) if p>=self.threshold]
         if self.extractor_name=='biomedbert_token':
             extracted_batch=self.entity_model.predict_batch([texts[i] for i in candidates])
         else:
             extracted_batch=[entities.predict(self.crf,texts[i]) for i in candidates]
         extracted_by_index=dict(zip(candidates,extracted_batch))
+        entity_coverage = (dict(zip(candidates, token_coverage(self.entity_model.tokenizer,
+                            [texts[i] for i in candidates])))
+                           if self.extractor_name == 'biomedbert_token' and candidates else {})
         for i,((left,right,sentence),probability) in enumerate(zip(spans,probabilities)):
             extracted=extracted_by_index.get(i,[])
             output=[dict(kind=e['kind'],text=e['text'],start=e['start']+left,end=e['end']+left) for e in extracted]
-            out.append(dict(text=sentence,start=left,end=right,ade_probability=float(probability),
+            coverage = dict(classification=classification_coverage[i],
+                            entity_extraction=entity_coverage.get(i))
+            warnings = [stage + '_truncated' for stage, value in coverage.items()
+                        if value is not None and value['truncated']]
+            out.append(dict(coverage=coverage,warnings=warnings,text=sentence,start=left,end=right,ade_probability=float(probability),
                 action='review' if probability>=self.threshold else 'lower_priority',entities=output))
         review=[r for r in out if r['action']=='review']
         return dict(document_sha256=hashlib.sha256(text.encode()).hexdigest(),model=self.name,model_version=self.version,

@@ -49,3 +49,17 @@ def test_promoted_neural_entities_match_saved_predictions():
         out=engine.analyze(row['text'])
         assert out['entity_extractor']=='biomedbert_token'
         assert out['sentences'][0]['entities']==row['entities']
+
+
+def test_long_sentence_exposes_partial_model_coverage():
+    if not (ROOT/'runtime/artifacts/manifest.json').exists():
+        pytest.skip('Run training for bundle integration')
+    engine=Engine(ROOT)
+    result=engine.analyze(' '.join(['aspirin']*150))
+    sentence=result['sentences'][0]
+    if engine.name=='biomedbert_frozen':
+        assert sentence['coverage']['classification']['input_tokens']==152
+        assert 'classification_truncated' in sentence['warnings']
+    if engine.extractor_name=='biomedbert_token' and sentence['action']=='review':
+        assert 'entity_extraction_truncated' in sentence['warnings']
+    assert sentence['end']==len(' '.join(['aspirin']*150))
