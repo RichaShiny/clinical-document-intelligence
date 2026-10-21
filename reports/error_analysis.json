@@ -1,0 +1,105 @@
+{
+  "model": "biomedbert_frozen",
+  "extractor": "biomedbert_token",
+  "threshold": 0.20637304856010874,
+  "predictions_sha256": "fcae31b364e217c50c7d87c96610f78f5e9a0406c653eb6830263ece637c0aab",
+  "scope": "Previously inspected development test set; descriptive diagnostics, not external validation. Character length is not token length or a demographic subgroup. Sparse gold annotations limit span interpretation. No thresholds or models are selected by these slices.",
+  "slices": {
+    "all": {
+      "n": 4172,
+      "tp": 747,
+      "fp": 457,
+      "tn": 2862,
+      "fn": 106,
+      "recall": 0.8757327080890973,
+      "precision": 0.6204318936877077,
+      "review_fraction": 0.28859060402684567,
+      "gated_exact_spans": {
+        "DRUG": {
+          "tp": 751,
+          "fp": 567,
+          "fn": 172,
+          "f1": 0.6702365015618028
+        },
+        "EFFECT": {
+          "tp": 795,
+          "fp": 768,
+          "fn": 341,
+          "f1": 0.5891070766950722
+        }
+      }
+    },
+    "chars_0_160": {
+      "n": 3157,
+      "tp": 548,
+      "fp": 298,
+      "tn": 2239,
+      "fn": 72,
+      "recall": 0.8838709677419355,
+      "precision": 0.6477541371158393,
+      "review_fraction": 0.2679759265125119,
+      "gated_exact_spans": {
+        "DRUG": {
+          "tp": 563,
+          "fp": 342,
+          "fn": 116,
+          "f1": 0.7108585858585859
+        },
+        "EFFECT": {
+          "tp": 552,
+          "fp": 441,
+          "fn": 196,
+          "f1": 0.6341183228029867
+        }
+      }
+    },
+    "chars_161_320": {
+      "n": 979,
+      "tp": 193,
+      "fp": 154,
+      "tn": 598,
+      "fn": 34,
+      "recall": 0.8502202643171806,
+      "precision": 0.5561959654178674,
+      "review_fraction": 0.35444330949948927,
+      "gated_exact_spans": {
+        "DRUG": {
+          "tp": 185,
+          "fp": 206,
+          "fn": 53,
+          "f1": 0.5882352941176471
+        },
+        "EFFECT": {
+          "tp": 235,
+          "fp": 309,
+          "fn": 143,
+          "f1": 0.5097613882863341
+        }
+      }
+    },
+    "chars_321_plus": {
+      "n": 36,
+      "tp": 6,
+      "fp": 5,
+      "tn": 25,
+      "fn": 0,
+      "recall": 1.0,
+      "precision": 0.5454545454545454,
+      "review_fraction": 0.3055555555555556,
+      "gated_exact_spans": {
+        "DRUG": {
+          "tp": 3,
+          "fp": 19,
+          "fn": 3,
+          "f1": 0.21428571428571427
+        },
+        "EFFECT": {
+          "tp": 8,
+          "fp": 18,
+          "fn": 2,
+          "f1": 0.4444444444444444
+        }
+      }
+    }
+  }
+}

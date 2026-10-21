@@ -129,3 +129,10 @@ Dockerfile         non-root service image; mounted local artifacts
 The ADE Hugging Face card lists the dataset license as **unknown**. This repository distributes code, aggregate measurements and provenance hashes, **not the case-report text or trained ADE artifacts**. Downloaded data retain their source terms. Do not infer commercial data rights from public accessibility. The pretrained BiomedBERT model has its own MIT model license; the repository's [MIT license](LICENSE) applies to project code only.
 
 Dataset: [ADE corpus on Hugging Face](https://huggingface.co/datasets/ade-benchmark-corpus/ade_corpus_v2). Research: [Gurulingappa et al., 2012](https://pmc.ncbi.nlm.nih.gov/articles/PMC3599676/). Biomedical encoder: [Microsoft BiomedBERT](https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext).
+
+### Diagnose model errors
+
+Generate an aggregate report from the private saved test predictions with
+`python -m clinical_ade.error_analysis`. See [the error analysis](docs/ERROR_ANALYSIS.md)
+for missed positives, sentence-length slices, gated drug/effect span performance,
+and limits on interpreting these development-test findings.
